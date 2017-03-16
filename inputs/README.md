@@ -15,27 +15,48 @@ module load samtools/1.3.1
 module loadbcftools/1.3.1
 ```
 
-Then, after installing samtools:
+4. Then, after installing samtools:
+```
 bgzip clinvar_[date].vcf
 bcftools index clinvar_[date].vcf.gz
 bgzip ExAC.r0.3.1.sites.vep.vcf
 bcftools index ExAC.r0.3.1.sites.vep.vcf.gz
+```
 
-Then, intersect
+5. Then, intersect
+```
 nohup bcftools isec $1 $2 -p `pwd` -c none -n=2 /srv/gsfs0/projects/bustamante/reference_panels/ClinVar/GRCh37/clinvar_20160104.vcf.gz /srv/gsfs0/projects/bustamante/reference_panels/ExAC/r0.3.1/ExAC.r0.3.1.sites.vep.vcf.gz
+```
 
-Then, confirm that:
+6. Then, confirm that:
+```
 cat 0001.vcf | awk -F '\t' 'NF==8' | wc -l 
 cat 0000.vcf | awk -F '\t' 'NF==8' | wc -l
+```
 are the same
 
-Then, create a joint VCF and pull out fields of use into a tab delimited flat file
+7. Then, create a joint VCF and pull out fields of use into a tab delimited flat file
+```
 ./intersect_vcfs.sh 0000.vcf 0001.vcf > clinvar.exac.variants.tab
+```
+8. Then, denormalize by gene (col 6), and by submission (col 7, 8 and 9).
+```
+cat clinvar.exac.variants.tab | awk '{
+  split($6,a,"|"); 
+  if(length(a)!=1) 
+    for(i=1;i<=length(a);i++) {
+        for(j=1;j<6;j++) 
+          printf $j"\t"; 
+        printf a[i]"\t"; 
+        for(j=7;j<NF;j++) 
+          printf $j"\t"; 
+        print $NF;
+    } 
+    else print;
+ }' > clinvar.exac.variants.gene.tab
+```
 
-Then, denormalize by gene (col 6), and by submission (col 7, 8 and 9).
-cat clinvar.exac.variants.tab | awk '{split($6,a,"|"); if(length(a)!=1) for(i=1;i<=length(a);i++) {for(j=1;j<6;j++) printf $j"\t"; printf a[i]"\t"; for(j=7;j<NF;j++) printf $j"\t"; print $NF;} else print;}' > clinvar.exac.variants.gene.tab
-
-Then, denormalize by submission (col 7, 8 and 9), after confirming that these are equal length fields (col separated by |)
+9. Then, denormalize by submission (col 7, 8 and 9), after confirming that these are equal length fields (col separated by |)
 cat clinvar.exac.variants.tab | awk '{split($7,a,"|"); split($8,b,"|"); split($9,c,"|"); if(length(a)!=1) for(i=1;i<=length(a);i++) {for(j=1;j<7;j++) printf $j"\t"; printf a[i]"\t"b[i]"\t"c[i]"\t"; for(j=10;j<NF;j++) printf $j"\t"; print $NF;} else print;}' > clinvar.exac.variants.submission.tab
 
 Then, denormalize by both

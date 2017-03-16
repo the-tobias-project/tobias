@@ -9,14 +9,14 @@ respectively
 2. Then, unzip them
 
 3. Then, load libraries
-```
+```shell
 module load tabix/0.2.6
 module load samtools/1.3.1
 module loadbcftools/1.3.1
 ```
 
 4. Then, after installing samtools:
-```
+```shell
 bgzip clinvar_[date].vcf
 bcftools index clinvar_[date].vcf.gz
 bgzip ExAC.r0.3.1.sites.vep.vcf

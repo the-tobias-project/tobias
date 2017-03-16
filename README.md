@@ -1,5 +1,5 @@
 # Tobias
-Tobias (_Tests of Bias_) is a suite of exploratory statistical tests for detecting subtle biases in clinical genomics resources. 
+Tobias (_Tests of bias_) is a suite of exploratory statistical tests for detecting subtle biases in clinical genomics resources. 
 
 Our initial release (version 1) focuses on questions related to genetic ancestry, and its effects on the clinical interpretation of variant effect. We explore these questions by means of statistical tests on two widely-used resources in clinical testing: ClinVar and EXaC.
 

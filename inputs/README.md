@@ -2,16 +2,18 @@
 Here, we describe the process by which the (ExAC x ClinVar) collapsed flat-file was created on the Stanford SCG cluster. YMMV.
 
 1. Start by downloading the ExAC and ClinVar repos (GRCh37) from:
---* ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/archive/2016/
---* ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/
+* ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/archive/2016/
+* ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/
 respectively
 
 2. Then, unzip them
 
 3. Then, load libraries
--- `module load tabix/0.2.6`
--- `module load samtools/1.3.1`
--- `module loadbcftools/1.3.1`
+```
+module load tabix/0.2.6
+module load samtools/1.3.1
+module loadbcftools/1.3.1
+```
 
 Then, after installing samtools:
 bgzip clinvar_[date].vcf

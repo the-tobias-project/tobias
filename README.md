@@ -12,7 +12,7 @@ Tobias comes with a web-based graphical user interface to help clinicians and ot
 Describe code segments as well as use of packages here. 
 
 #### Feedback: 
-Please direct comments to snehit [at] stanford dotty edu
+Please direct comments to snehit atty stanford dotty edu
 
 #### Funding acknowledgements:
 Tobias was conceived and developed thanks to support from  

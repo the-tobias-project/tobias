@@ -16,5 +16,5 @@ Please direct comments to snehit [at] stanford dotty edu
 
 #### Funding acknowledgements:
 Tobias was conceived and developed thanks to support from  
-1. The UCSF/Stanford CERSI grant by the FDA (U01 FD004979)
-2. The Clinical Genome Resource grant by the NHGRI (U01 HG007436-04)
+1. The UCSF/Stanford CERSI grant, awarded by the FDA (U01 FD004979)
+2. The Stanford/Baylor Clinical Genome Resource grant, awarded by the NHGRI (U01 HG007436-04)

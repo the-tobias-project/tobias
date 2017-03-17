@@ -1,7 +1,7 @@
 # Tobias
 Tobias (_Tests of bias_) is a suite of exploratory statistical tests for detecting subtle biases in clinical genomics resources. 
 
-Our initial release (version 1) focuses on questions related to genetic ancestry, and whether it confounds the clinical interpretation of a genetic variant. We explore these questions by means of statistical tests on two widely-used, publicly available resources that most clinical laboratories rely on in their interpretation process: ClinVar and EXaC.
+Our initial release (version 1) focuses on the marker of genetic ancestry. Through a variety of hypotheses and models, we ask whether this marker confounds the clinical interpretation of a genetic variant. These explorations are made possible by the public dissemination of data from two resources: ClinVar and EXaC. Most clinical laboratories and classification guidelines rely on these, to varying extents, in making their determination about the effect of a variant.
 
 #### GUI:
 Tobias comes accompanied by a web-based tooling to help clinicians and other non-technical researchers quickly visualize and explore a variety of hypotheses (under development).

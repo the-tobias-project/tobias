@@ -14,7 +14,6 @@ populations <- c("nfe", "afr", "amr", "sas", "eas", "fin", "oth")
 clinvar <- setAFs(clinvar, c("adj", populations))
 clinvar <- setResidualAFs(clinvar, populations)
 pdf("outputs/af_histograms.pdf",width=16,height=8)
-
 par(mfrow = c(2,length(populations)) )
 histAFs(clinvar, populations, "gray")
 histResidualAFs(clinvar, populations, "gray")

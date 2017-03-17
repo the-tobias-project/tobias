@@ -15,6 +15,6 @@ Describe code segments as well as use of packages here.
 Please direct comments to snehit [at] stanford dotty edu
 
 #### Funding acknowledgements:
-Tobias was conceived and developed thanks to the generous support of 
-1. UCSF/Stanford CERSI grant by the FDA (U01 FD004979)
-2. Clinical Genome Resource grant by the NIH (U01 HG007436-04)
+Tobias was conceived and developed thanks to support from  
+1. The UCSF/Stanford CERSI grant by the FDA (U01 FD004979)
+2. The Clinical Genome Resource grant by the NIH (U01 HG007436-04)

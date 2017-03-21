@@ -6,7 +6,7 @@ Our initial release (version 1) focuses on the marker of genetic ancestry. Throu
 ClinVar solicits, curates and disseminates the clinical interpretations assigned to genetic variants discovered by hundreds of clinical test providers. ExAC collects, curates and disseminates petabytes of data from large population genomic sequencing projects, allowing us to precisely estimate the allele frequency of variants in different human populations. Most clinical laboratory processes as well as variant classification guidelines rely on these two resources (albeit to varying extents) in making their determination about the effect of a variant.
 
 #### GUI:
-Tobias comes with a web-based graphical user interface to help clinicians and other non-technical researchers quickly visualize and explore a variety of hypotheses (under development by Arturo Lopez Pineda <arturolp>).
+Tobias comes with a web-based graphical user interface to help clinicians and other non-technical researchers quickly visualize and explore a variety of hypotheses (under development by Arturo Lopez Pineda <arturolp@stanford.edu>).
 
 #### Usage:
 Describe code segments as well as use of packages here. 

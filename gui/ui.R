@@ -55,13 +55,13 @@ body <- dashboardBody(
               box(
                 title = "Inputs", status = "warning", solidHeader = TRUE,
                 br(),
-                selectInput("pop", "Population", list(
-                  "All populations" = "all",
+                selectInput("pop_hist", "Population", list(
                   "African" = "afr",
                   "American" = "amr",
                   "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe")
-                ), selected="nfe")
+                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
+                  "Other" = "oth"
+                ), selected="amr")
               )
             )
     ),
@@ -69,6 +69,31 @@ body <- dashboardBody(
     # Second tab content
     tabItem(tabName = "scatter",
             h2("Scatter Plot"),
+            br(),
+            fluidRow(
+              box(
+                title = "Scatter plot of Population Allele Frequency", status = "primary", solidHeader = TRUE,
+                collapsible = TRUE,
+                plotOutput("scatterAF", height = 400)
+              ),
+
+              box(
+                title = "Inputs", status = "warning", solidHeader = TRUE,
+                br(),
+                selectInput("pop_scatter", "Population", list(
+                  "African" = "afr",
+                  "American" = "amr",
+                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
+                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
+                  "Other" = "oth"
+                ), selected="amr")
+              )
+            )
+    ),
+
+    # Third tab content
+    tabItem(tabName = "enrichment",
+            h2("Enrichment"),
             br(),
             fluidRow(
               box(
@@ -84,12 +109,6 @@ body <- dashboardBody(
                 textInput("text", "Text input:")
               )
             )
-    ),
-
-    # Third tab content
-    tabItem(tabName = "enrichment",
-            h2("Enrichment"),
-            br()
     )
   )
 )

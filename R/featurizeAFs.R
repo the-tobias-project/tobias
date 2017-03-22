@@ -78,7 +78,14 @@ scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, ti
   #     return("colorByClass has different number of levels than colors in colorcode")
   # )
   plot(dataset[,feature1], dataset[,feature2], col=alpha(colorcode[dataset[,colorByClass]],1.0), pch=10, cex=.3, main=title, xlab = xlabel, ylab = ylabel )
-  legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(clinvar[,colorByClass]), bty="n")
+
+  #MODIFIED
+  #changed to "dataset" since "clinvar" was not previously defined
+  #legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(clinvar[,colorByClass]), bty="n")
+  legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(dataset[,colorByClass]), bty="n")
+  #End of MODIFIED
+
+
   #  abline(a=0, b=20,lty=2,col="gray60")
   #  abline(a=0, b=0.05,lty=2,col="gray60")
 }

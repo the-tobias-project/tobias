@@ -77,6 +77,7 @@ scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, ti
   #   if (length(colorcode) != levels(dataset[,colorByClass]))
   #     return("colorByClass has different number of levels than colors in colorcode")
   # )
+
   plot(dataset[,feature1], dataset[,feature2], col=alpha(colorcode[dataset[,colorByClass]],1.0), pch=10, cex=.3, main=title, xlab = xlabel, ylab = ylabel )
 
   #MODIFIED

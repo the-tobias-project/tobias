@@ -43,13 +43,13 @@ body <- dashboardBody(
               box(
                 title = "Histogram of Population Allele Frequency", status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
-                plotOutput("histogramPAF", height = 250)
+                plotOutput("histogramPAF", height = 300)
               ),
 
               box(
                 title = "Histogram of Global Allele Frequency", status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
-                plotOutput("histogramGAF", height = 250)
+                plotOutput("histogramGAF", height = 300)
               ),
 
               box(
@@ -96,17 +96,22 @@ body <- dashboardBody(
             h2("Enrichment"),
             br(),
             fluidRow(
-              box(
-                title = "Histogram", status = "primary", solidHeader = TRUE,
+              box(width = "60%",
+                title = "Test of Enrichement", status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
-                plotOutput("plot1", height = 250)
+                plotOutput("enrichment", height = 400)
               ),
 
               box(
                 title = "Inputs", status = "warning", solidHeader = TRUE,
-                "Box content here", br(), "More box content",
-                sliderInput("slider", "Slider input:", 1, 100, 50),
-                textInput("text", "Text input:")
+                br(),
+                selectInput("pop_enrichement", "Population", list(
+                  "African" = "afr",
+                  "American" = "amr",
+                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
+                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
+                  "Other" = "oth"
+                ), selected="amr")
               )
             )
     )

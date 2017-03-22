@@ -14,6 +14,7 @@ library(shinydashboard)
 # Load Scripts
 source("../R/loadData.R")
 source("../R/featurizeAFs.R")
+source("../R/exploratoryTests.R")
 
 # Load Data
 clinvar <- readData("../inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
@@ -38,16 +39,6 @@ normalize <- function(id_label){
 
 shinyServer(function(input, output) {
 
-  #Example Plot
-  #---------------------------
-  set.seed(122)
-  histdata <- rnorm(500)
-
-  output$plot1 <- renderPlot({
-    data <- histdata[seq_len(input$slider)]
-    hist(data)
-  })
-
   # Histogram Population Allele Frequency
   #---------------------------
   output$histogramPAF <- renderPlot({
@@ -71,18 +62,34 @@ shinyServer(function(input, output) {
   output$scatterAF <- renderPlot({
 
     populations <- c(input$pop_scatter)
-    colorcode<-c("blue","lightgreen","red")
     clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
     dataset <- setAFs(clinvar, c("adj", populations))
 
-
-    print(names(input$pop_scatter))
-
     af_label <- paste("af_", input$pop_scatter, sep="")
+    colorcode<-c("blue","lightgreen","red")
     title_label <- paste("All vs. ", normalize(input$pop_scatter), sep = "")
     y_label <- paste("AF(", normalize(input$pop_scatter) ,")", sep="")
+
     scatterPlot(dataset, "af_adj", af_label, "ACMG", colorcode, title_label, "AF(global)", y_label)
 
   })
+
+
+  # Enrichment Plot
+  #---------------------------
+   output$enrichment <- renderPlot({
+
+    populations <- c(input$pop_enrichement)
+    clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
+    dataset <- setAFs(clinvar, c("adj", populations))
+
+    af_label <- paste("af_", input$pop_enrichement, sep="")
+    colorcode<-c("blue","lightgreen","red")
+    title_label <- paste("All vs. ", normalize(input$pop_enrichement), sep = "")
+    y_label <- paste("AF(", normalize(input$pop_enrichement) ,")", sep="")
+
+    testEnrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
+
+   })
 
 })

@@ -1,36 +1,78 @@
-library(shiny)
+#================================================================
+# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
+# Author: Arturo Lopez Pineda <arturolp@stanford.edu>
+# With code from: Snehit Prabhu <snehit@stanford.edu>
+# Date: March 22, 2017
+#================================================================
 
-# Define UI for application that draws a histogram
-shinyUI(fluidPage(
+library(shinydashboard)
 
-  # Application title
-  titlePanel("TOBIAS: Tests of Bias"),
+#---------------------------
+# Define UI for application
+#---------------------------
 
-  # Sidebar with parameters
-  sidebarLayout(
-    position = "left",
-    sidebarPanel(
-      selectInput("pop1", "Population 1", list(
-        "African" = "afr",
-        "American" = "amr",
-        "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-        "Europe" = list("European (all)"="eur", "Finn"="fin", "Non-Finn"="nfe")
-      ), selected="eur"),
-      selectInput("pop2", "Population 2", list(
-        "African" = "afr",
-        "American" = "amr",
-        "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-        "Europe" = list("European (all)"="eur", "Finn"="fin", "Non-Finn"="nfe")
-      ), selected="amr"),
-      sliderInput("criteria", label = "Sliding Triangle", min = 0.5, max = 1, value = 1),
-      actionButton("button", "Calculate"),
-      br(),
-      sliderInput("threshold", label = "Threshold", min = 0, max = 10, value = 5, step = 1)
+
+# Header of the application
+#---------------------------
+header <- dashboardHeader(
+  title = "TOBIAS project"
+)
+
+
+# Sidebar of the application
+#---------------------------
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    menuItem("Histogram", tabName = "histogram", icon = icon("bar-chart")),
+    menuItem("Scatter", tabName = "scatter", icon = icon("area-chart")),
+    menuItem("Enrichment", tabName = "enrichment", icon = icon("star"))
+  )
+)
+
+
+# Body of the application
+#---------------------------
+body <- dashboardBody(
+  tabItems(
+
+    # First tab content
+    tabItem(tabName = "histogram",
+            h2("Histogram"),
+            br(),
+            fluidRow(
+              box(
+                title = "Histogram", status = "primary", solidHeader = TRUE,
+                collapsible = TRUE,
+                plotOutput("plot1", height = 250)
+              ),
+
+              box(
+                title = "Inputs", status = "warning", solidHeader = TRUE,
+                "Box content here", br(), "More box content",
+                sliderInput("slider", "Slider input:", 1, 100, 50),
+                textInput("text", "Text input:")
+              )
+            )
     ),
 
-    # Show a plot of the generated bias graphics
-    mainPanel(
-      plotOutput("barplot")
+    # Second tab content
+    tabItem(tabName = "scatter",
+            h2("Scatter Plot"),
+            br()
+    ),
+
+    # Third tab content
+    tabItem(tabName = "enrichment",
+            h2("Enrichment"),
+            br()
     )
   )
-))
+)
+
+# Calling the UI
+#---------------------------
+dashboardPage(
+  skin="blue",
+  header, sidebar, body
+)
+

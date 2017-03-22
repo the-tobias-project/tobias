@@ -41,6 +41,37 @@ body <- dashboardBody(
             br(),
             fluidRow(
               box(
+                title = "Histogram of Population Allele Frequency", status = "primary", solidHeader = TRUE,
+                collapsible = TRUE,
+                plotOutput("histogramPAF", height = 250)
+              ),
+
+              box(
+                title = "Histogram of Global Allele Frequency", status = "primary", solidHeader = TRUE,
+                collapsible = TRUE,
+                plotOutput("histogramGAF", height = 250)
+              ),
+
+              box(
+                title = "Inputs", status = "warning", solidHeader = TRUE,
+                br(),
+                selectInput("pop", "Population", list(
+                  "All populations" = "all",
+                  "African" = "afr",
+                  "American" = "amr",
+                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
+                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe")
+                ), selected="nfe")
+              )
+            )
+    ),
+
+    # Second tab content
+    tabItem(tabName = "scatter",
+            h2("Scatter Plot"),
+            br(),
+            fluidRow(
+              box(
                 title = "Histogram", status = "primary", solidHeader = TRUE,
                 collapsible = TRUE,
                 plotOutput("plot1", height = 250)
@@ -53,12 +84,6 @@ body <- dashboardBody(
                 textInput("text", "Text input:")
               )
             )
-    ),
-
-    # Second tab content
-    tabItem(tabName = "scatter",
-            h2("Scatter Plot"),
-            br()
     ),
 
     # Third tab content

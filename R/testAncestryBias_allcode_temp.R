@@ -19,14 +19,15 @@ require(effects)
 
 ### New project structure:
 ### Entry point is: 
-### main.R --- all classes are invoked in sequence from here.
+### main.R --- all classes are invoked, sequentially, from this parent class.
 
 ### Functionality logic in: 
 ### 1. loadData.R --- contains logic to load the ClinVar and ExAC datasets, and create a single dataframe.
 ### 2. featurizeAFs.R --- contains logic to take each column in the dataframe, and to create features required by various analysis tools 
 ### 3. exploratoryTests.R --- contains exploratory statistical models (e.g. clustering, etc.)
-### 4. predict.R --- contains predictive statistical models (e.g. regression, etc.)
-### 5. effects.R --- contains 
+### 4. effects.R --- contains logic to FIT the regression models
+### 5. plotEffects.R --- contains logic to PLOT the regression models
+### 6. predict.R --- contains logic to TEST the regression models (permutation tests, statistical significance, prediction power, etc.)
 
 #############################################################################
 

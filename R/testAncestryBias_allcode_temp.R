@@ -11,6 +11,29 @@ require(ggplot2)
 require(reshape2)
 require(effects)
 
+
+### This is old, deprecated code with lots of hardcoding. 
+### This entire project was refactored into a new structure, with multiple files wrapping up reusable functions.
+### Comments underneath will help you map sections of the code to the new multi-file structure.  
+
+
+### New project structure:
+### Entry point is: 
+### main.R --- all classes are invoked in sequence from here.
+
+### Functionality logic in: 
+### 1. loadData.R --- contains logic to load the ClinVar and ExAC datasets, and create a single dataframe.
+### 2. featurizeAFs.R --- contains logic to take each column in the dataframe, and to create features required by various analysis tools 
+### 3. exploratoryTests.R --- contains exploratory statistical models (e.g. clustering, etc.)
+### 4. predict.R --- contains predictive statistical models (e.g. regression, etc.)
+### 5. effects.R --- contains 
+
+#############################################################################
+
+
+
+### ---------- Code from here onwards went into loadData.R ---------- ###
+
 clinvar <- read.delim("/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab", sep="\t", header=TRUE)
 #clinvar <- read.delim("/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.acmg56.tab", sep="\t", header=TRUE)
 dim(clinvar)
@@ -37,6 +60,18 @@ dim(clinvar)
 
 #confirm no 0 entries
 xtabs(~ CLNSIG, data = clinvar)
+
+### ---------- Code for loadData.R stops here---------- ###
+
+
+
+
+#############################################################################
+
+
+
+
+### ---------- Code from here onwards went into featurizeAFs.R ---------- ###
 
 # Overall
 clinvar$ac_adj <- as.numeric(as.character(clinvar$ac_adj))
@@ -143,6 +178,16 @@ legend("topleft",col=colorcode, pch = 10, cex=.5, legend=levels(clinvar$ACMG), b
 abline(a=0, b=20,lty=2,col="gray60")
 abline(a=0, b=0.05,lty=2,col="gray60")
 
+### ---------- Code for featurizeAFs.R stops here---------- ###
+
+
+
+#############################################################################
+
+
+
+### ---------- Code from here onwards went into exploratoryTests.R ---------- ###
+
 library(ggplot2)
 library(ggExtra)
 library(gridExtra)
@@ -217,8 +262,15 @@ all <- gtable_add_grob(all, four, 1, 2)
 quartz()
 grid.draw(all)
 
+### ---------- Code for exploratoryTests.R stops here---------- ###
 
-#### THIS IS WHERE I STOPPED ####
+
+
+####################### THIS IS WHERE I STOPPED #######################
+
+
+
+### ---------- Code from here onwards should go into effects.R ---------- ###
 
 #1. Test the effects
 # clinvar$nfe_adj_sq <- clinvar$nfe_adj^2
@@ -250,8 +302,15 @@ global_preds_melt <- melt(global_preds, id.vars = c("af_adj"), value.name = "pro
 global_afr_preds_melt <- melt(global_afr_preds, id.vars = c("af_adj", "afr_adj"), value.name = "probability")
 ancestry_preds_melt <- melt(ancestry_preds, id.vars = c("af_adj", "nfe_adj", "afr_adj", "amr_adj", "sas_adj"), value.name = "probability")
 
+### ---------- Code for effects.R should stop here---------- ###
 
-## Plotting starts here ###
+
+
+#############################################################################
+
+
+
+### ---------- Code from here onwards should go into plotEffects.R ---------- ###
 
 #Type 1: Probability plots
 ggplot(global_preds_melt, aes(x = adj_fs, y = probability, colour = variable)) + geom_line() # + facet_grid(variable ~ ., scales="fixed")
@@ -283,8 +342,15 @@ test_sas_eff <- Effect("sas_adj", test_ancestry_f, xlevels = sas_diffs)
 plot(test_sas_eff, ylim=c(0,1), rug=FALSE, color="orange", xlab = "AF(global)-AF(sas)", ylab = "Probability", main="Ancestry controlled", par.settings = list(fontsize = list(text = 20, points = 20)))
 
 
-### STOP HERE ####
+### ---------- Code for plotEffects.R should stop here---------- ###
 
+
+
+#############################################################################
+
+
+
+### ---------- Code from here onwards should go into predict.R ---------- ###
 
 library(ROCR)
 # Type 4: Hard misclassiication error
@@ -434,6 +500,15 @@ for(run in 1:10000) {
 }
 #print(candidate/10)
 
+### ---------- Code for predict.R should stop here---------- ###
+
+
+
+#############################################################################
+
+
+
+### This is scratch space to try stuff. Not part of code.
 #Plot null expectations
 temp <- test_nfe_eff
 temp$prob <- proportions[1:(length(test_nfe_eff$prob)/3),]

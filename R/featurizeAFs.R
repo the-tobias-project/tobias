@@ -18,14 +18,30 @@ setAFs <- function(dataset, poplabels) { #c("adj", "nfe", "afr", "amr", "sas", "
     assign("total", paste("an_", pop, sep=""))
     dataset[,total] <- as.numeric(as.character(dataset[,total]))
     assign("freq", paste("af_", pop, sep=""))
-    dataset[,freq] <- clinvar[,allele]/pmax(dataset[,total],1)
+
+    #MODIFIED
+    #dataset[,freq] <- clinvar[,allele]/pmax(dataset[,total],1)
+    #changed to "dataset" since "clinvar" was not previously defined
+    dataset[,freq] <- dataset[,allele]/pmax(dataset[,total],1)
+    #End of MODIFIED
   }
   return(dataset)
 }
 
 setResidualAFs <- function(dataset, poplabels) {
   for (pop in poplabels) {
+
+    #Definitions that were never added in the scope of this function
+    #ADDED
+    assign("allele", paste("ac_", pop, sep=""))
+    dataset[,allele] <- as.numeric(as.character(dataset[,allele]))
+    assign("total", paste("an_", pop, sep=""))
+    dataset[,total] <- as.numeric(as.character(dataset[,total]))
     assign("population", paste("af_", pop, sep=""))
+    dataset[,population] <- dataset[,allele]/pmax(dataset[,total],1)
+    #End of ADDED
+
+
     assign("dfreq", paste("d_", pop, sep=""))
     dataset[,dfreq] <- dataset[,population] - dataset[,"af_adj"]
     range(dataset[,dfreq])
@@ -34,6 +50,9 @@ setResidualAFs <- function(dataset, poplabels) {
   return(dataset)
 }
 
+#Can we split this function into two functions?
+# One will call the for loop for all populations in the API
+# Another will create individual histograms, also used by the UI
 histAFs <- function(dataset, poplabels, colorName) {
   i=1
   for (pop in poplabels) {
@@ -58,8 +77,16 @@ scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, ti
   #   if (length(colorcode) != levels(dataset[,colorByClass]))
   #     return("colorByClass has different number of levels than colors in colorcode")
   # )
+
   plot(dataset[,feature1], dataset[,feature2], col=alpha(colorcode[dataset[,colorByClass]],1.0), pch=10, cex=.3, main=title, xlab = xlabel, ylab = ylabel )
-  legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(clinvar[,colorByClass]), bty="n")
+
+  #MODIFIED
+  #changed to "dataset" since "clinvar" was not previously defined
+  #legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(clinvar[,colorByClass]), bty="n")
+  legend("topleft",col=alpha(colorcode,1.0), pch = 10, cex=.5, legend=levels(dataset[,colorByClass]), bty="n")
+  #End of MODIFIED
+
+
   #  abline(a=0, b=20,lty=2,col="gray60")
   #  abline(a=0, b=0.05,lty=2,col="gray60")
 }

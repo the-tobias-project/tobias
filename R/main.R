@@ -4,7 +4,8 @@
 # Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
 # Author: Snehit Prabhu <snehit@stanford.edu>
 #---------------------------------------------------------------
-setwd("/Users/snehit/dev/tobias/")
+#setwd("/Users/snehit/dev/tobias/")
+setwd("../")
 
 source("R/loadData.R")
 clinvar <- readData("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")

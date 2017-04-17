@@ -1,0 +1,9 @@
+input = list(#
+                  "African" = "afr",#
+                  "American" = "amr",#
+                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),#
+                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),#
+                  "Other" = "oth"#
+                )
+input
+input

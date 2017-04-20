@@ -2,7 +2,7 @@
 # Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
 # Author: Arturo Lopez Pineda <arturolp@stanford.edu>
 # With code from: Snehit Prabhu <snehit@stanford.edu>
-# Date: March 22, 2017
+# Date: April 20, 2017
 #---------------------------------------------------------------
 
 library(shinydashboard)
@@ -15,21 +15,31 @@ library(shinydashboard)
 source("../R/loadData.R")
 source("../R/featurizeAFs.R")
 source("../R/exploratoryTests.R")
+source("../R/effects.R")
 
 # Load Data
 clinvar <- readData("../inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
+clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
+populations <- names(pops)
+dataset <- setAFs(clinvar, c("adj", populations))
+dataset <- setResidualAFs(dataset, c("adj", populations))
+
+pops <- list(
+  "afr" = list("African", "purple"),
+  "amr" = list("American", "darkgreen"),
+  "eas" = list("East Asian", "orange"),
+  "sas" = list("South Asian", "gold"),
+  "fin" = list("Finn", "pink"),
+  "nfe" = list("Non-Finn", "brown"),
+  "oth" = list("Other", "tomato")
+)
 
 normalize <- function(id_label){
-  pops <- list(
-    "afr" = "African",
-    "amr" = "American",
-    "eas" = "East Asian",
-    "sas" = "South Asian",
-    "fin" = "Finn",
-    "nfe" = "Non-Finn",
-    "oth" = "Other"
-  )
-  return(pops[id_label])
+  return(unlist(pops[id_label])[1])
+}
+
+getColor <- function(id_label){
+  return(unlist(pops[id_label])[2])
 }
 
 
@@ -39,31 +49,21 @@ normalize <- function(id_label){
 
 shinyServer(function(input, output) {
 
-  # Histogram Population Allele Frequency
+  # 1A. Histogram Population Allele Frequency
   #---------------------------
   output$histogramPAF <- renderPlot({
-    populations <- c(input$pop_hist)
-    dataset <- setAFs(clinvar, c("adj", populations))
-    histAFs(dataset, populations, "goldenrod1")
-    #goldenrod1, cornsilk3
+    histAFs(dataset, input$pop_hist, getColor(input$pop_hist))
   })
 
-  # Histogram Global Allele Frequency
+  # 1B. Histogram Global Allele Frequency
   #---------------------------
   output$histogramGAF <- renderPlot({
-    populations <- c(input$pop_hist)
-    dataset <- setResidualAFs(clinvar, c("adj", populations))
-    histResidualAFs(dataset, populations, "goldenrod1")
-    #goldenrod1, cornsilk3
+    histResidualAFs(dataset, input$pop_hist, getColor(input$pop_hist))
   })
 
-  # Scatter Plot
+  # 2. Scatter Plot
   #---------------------------
   output$scatterAF <- renderPlot({
-
-    populations <- c(input$pop_scatter)
-    clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
-    dataset <- setAFs(clinvar, c("adj", populations))
 
     af_label <- paste("af_", input$pop_scatter, sep="")
     colorcode<-c("blue","lightgreen","red")
@@ -75,13 +75,9 @@ shinyServer(function(input, output) {
   })
 
 
-  # Enrichment Plot
+  # 3. Enrichment Plot
   #---------------------------
    output$enrichment <- renderPlot({
-
-    populations <- c(input$pop_enrichement)
-    clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
-    dataset <- setAFs(clinvar, c("adj", populations))
 
     af_label <- paste("af_", input$pop_enrichement, sep="")
     colorcode<-c("blue","lightgreen","red")
@@ -90,6 +86,13 @@ shinyServer(function(input, output) {
 
     testEnrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
 
+   })
+
+   # 4. Effects
+   #---------------------------
+   output$effects <- renderPlot({
+     models <- fit_models(dataset, input$pop_effects)
+     plotEffects(input$pop_effects, getColor(input$pop_effects), models$test_ancestry_f)
    })
 
 })

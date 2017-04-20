@@ -10,7 +10,13 @@ library(shinydashboard)
 #---------------------------
 # Define UI for application
 #---------------------------
-
+populations <-list(
+  "African" = "afr",
+  "American" = "amr",
+  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
+  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
+  "Other" = "oth"
+)
 
 # Header of the application
 #---------------------------
@@ -25,7 +31,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Histogram", tabName = "histogram", icon = icon("bar-chart")),
     menuItem("Scatter", tabName = "scatter", icon = icon("area-chart")),
-    menuItem("Enrichment", tabName = "enrichment", icon = icon("star"))
+    menuItem("Enrichment", tabName = "enrichment", icon = icon("star")),
+    menuItem("Effects", tabName = "effects", icon = icon("snowflake-o"))
   )
 )
 
@@ -55,13 +62,7 @@ body <- dashboardBody(
               box(
                 title = "Inputs", status = "warning", solidHeader = TRUE,
                 br(),
-                selectInput("pop_hist", "Population", list(
-                  "African" = "afr",
-                  "American" = "amr",
-                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
-                  "Other" = "oth"
-                ), selected="amr")
+                selectInput("pop_hist", "Population", populations, selected="amr")
               )
             )
     ),
@@ -80,13 +81,7 @@ body <- dashboardBody(
               box(
                 title = "Inputs", status = "warning", solidHeader = TRUE,
                 br(),
-                selectInput("pop_scatter", "Population", list(
-                  "African" = "afr",
-                  "American" = "amr",
-                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
-                  "Other" = "oth"
-                ), selected="amr")
+                selectInput("pop_scatter", "Population", populations, selected="amr")
               )
             )
     ),
@@ -97,24 +92,39 @@ body <- dashboardBody(
             br(),
             fluidRow(
               box(width = "60%",
-                title = "Test of Enrichement", status = "primary", solidHeader = TRUE,
-                collapsible = TRUE,
-                plotOutput("enrichment", height = 400)
+                  title = "Test of Enrichement", status = "primary", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("enrichment", height = 400)
               ),
 
               box(
                 title = "Inputs", status = "warning", solidHeader = TRUE,
                 br(),
-                selectInput("pop_enrichement", "Population", list(
-                  "African" = "afr",
-                  "American" = "amr",
-                  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-                  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
-                  "Other" = "oth"
-                ), selected="amr")
+                selectInput("pop_enrichement", "Population", populations, selected="amr")
+              )
+            )
+    ),
+
+    # Fourth tab content
+    tabItem(tabName = "effects",
+            h2("Effects"),
+            br(),
+            fluidRow(
+              box(
+                  title = "Test of Effects", status = "primary", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("effects", height = 400)
+              ),
+
+              box(
+                title = "Inputs", status = "warning", solidHeader = TRUE,
+                br(),
+                selectInput("pop_effects", "Population", populations, selected="amr")
               )
             )
     )
+
+
   )
 )
 

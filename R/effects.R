@@ -3,36 +3,33 @@
 #---------------------------------------------------------------
 # Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
 # Author: Snehit Prabhu <snehit@stanford.edu>
+# Contributor: Arturo Lopez Pineda <arturolp@stanford.edu>
 #---------------------------------------------------------------
 
-#test the effects
 
-# clinvar$nfe_adj_sq <- clinvar$nfe_adj^2
-test_global_f <- multinom(ACMG ~ af_adj, data = clinvar)
-test_global_afr_f <- multinom(ACMG ~ af_adj + afr_adj, data = clinvar)
-test_ancestry_f <- multinom(ACMG ~ af_adj + nfe_adj + afr_adj + amr_adj + sas_adj, data = clinvar)
+#--------
+# A. contains logic to FIT the regression models
 
-z_global_f <- summary(test_global_f)$coefficients/summary(test_global_f)$standard.errors
-z_global_afr_f <- summary(test_global_afr_f)$coefficients/summary(test_global_afr_f)$standard.errors
-z_ancestry_f <- summary(test_ancestry_f)$coefficients/summary(test_ancestry_f)$standard.errors
+# Part 1. Create 3 models
+fit_models <- function(clinvar, pop){
+  assign("pop_adj", paste("d", pop, sep="_"))
+  test_global_f <- multinom(ACMG ~ af_adj, data = clinvar, trace=FALSE)
+  test_global_pop_f <- multinom(ACMG ~ af_adj + get(pop_adj), data = clinvar, trace=FALSE)
+  test_ancestry_f <- multinom(ACMG ~ af_adj + d_nfe + d_fin + d_afr + d_amr + d_sas + d_oth + d_eas, data = clinvar, trace=FALSE)
 
-p_global_f <- (1 - pnorm(abs(z_global_f), 0, 1))*2
-p_global_afr_f <- (1 - pnorm(abs(z_global_afr_f), 0, 1))*2
-p_ancestry_f <- (1 - pnorm(abs(z_ancestry_f), 0, 1))*2
+  return(list(test_global_f=test_global_f, test_global_pop_f=test_global_pop_f, test_ancestry_f=test_ancestry_f))
+}
 
-adj_fs <- data.frame(af_adj = c(0:100)/100)
-nfe_diffs <- data.frame(nfe_adj = 2*c(-50:50)/100)
-afr_diffs <- data.frame(afr_adj = 2*c(-50:50)/100)
-amr_diffs <- data.frame(amr_adj = 2*c(-50:50)/100)
-sas_diffs <- data.frame(sas_adj = 2*c(-50:50)/100)
-afr_data <- cbind(adj_fs, afr_diffs)
-ancestry_data <- cbind(adj_fs, nfe_diffs, afr_diffs, amr_diffs, sas_diffs)
+#--------
+# B. Contains logic to PLOT the regression models
 
-global_preds <- cbind(adj_fs, predict(test_global_f, newdata = adj_fs, type = "probs", se = TRUE))
-global_afr_preds <- cbind(afr_data, predict(test_global_afr_f, newdata = afr_data, type = "probs", se = TRUE))
-ancestry_preds <- cbind(ancestry_data, predict(test_ancestry_f, newdata = ancestry_data, type = "probs", se = TRUE))
+plotEffects <- function(pop, popColor, test_ancestry_f){
+  pop_diffs <- data.frame(2*c(-50:50)/100)
+  inputLabel <- paste("d", pop, sep="_")
+  test_pop_eff <- Effect(inputLabel, test_ancestry_f, xlevels = pop_diffs)
+  myXlab = paste("AF(global)-AF(", pop, ")", sep="")
+  plot(test_pop_eff, ylim=c(0,1), rug=FALSE, color=popColor, xlab = myXlab, ylab = "Probability", main="Ancestry controlled", par.settings = list(fontsize = list(text = 20, points = 20)))
+}
 
-global_preds_melt <- melt(global_preds, id.vars = c("af_adj"), value.name = "probability")
-global_afr_preds_melt <- melt(global_afr_preds, id.vars = c("af_adj", "afr_adj"), value.name = "probability")
-ancestry_preds_melt <- melt(ancestry_preds, id.vars = c("af_adj", "nfe_adj", "afr_adj", "amr_adj", "sas_adj"), value.name = "probability")
+
 

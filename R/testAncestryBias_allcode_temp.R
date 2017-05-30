@@ -12,18 +12,18 @@ require(reshape2)
 require(effects)
 
 
-### This is old, deprecated code with lots of hardcoding. 
+### This is old, deprecated code with lots of hardcoding.
 ### This entire project was refactored into a new structure, with multiple files wrapping up reusable functions.
-### Comments underneath will help you map sections of the code to the new multi-file structure.  
+### Comments underneath will help you map sections of the code to the new multi-file structure.
 
 
 ### New project structure:
-### Entry point is: 
+### Entry point is:
 ### main.R --- all classes are invoked, sequentially, from this parent class.
 
-### Functionality logic in: 
+### Functionality logic in:
 ### 1. loadData.R --- contains logic to load the ClinVar and ExAC datasets, and create a single dataframe.
-### 2. featurizeAFs.R --- contains logic to take each column in the dataframe, and to create features required by various analysis tools 
+### 2. featurizeAFs.R --- contains logic to take each column in the dataframe, and to create features required by various analysis tools
 ### 3. exploratoryTests.R --- contains exploratory statistical models (e.g. clustering, etc.)
 ### 4. effects.R --- contains logic to FIT the regression models
 ### 5. plotEffects.R --- contains logic to PLOT the regression models
@@ -35,7 +35,8 @@ require(effects)
 
 ### ---------- Code from here onwards went into loadData.R ---------- ###
 
-clinvar <- read.delim("/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab", sep="\t", header=TRUE)
+#clinvar <- read.delim("/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab", sep="\t", header=TRUE)
+clinvar <- read.delim("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab", sep="\t", header=TRUE)
 #clinvar <- read.delim("/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.acmg56.tab", sep="\t", header=TRUE)
 dim(clinvar)
 # with(clinvar, tapply(CLNSIG, GENEINFO, FUN = function(x) length(unique(x))))
@@ -275,19 +276,24 @@ grid.draw(all)
 
 #1. Test the effects
 # clinvar$nfe_adj_sq <- clinvar$nfe_adj^2
+
+# Part 1. Create 3 models
 test_global_f <- multinom(ACMG ~ af_adj, data = clinvar) # ACMG = global_allele_freq
 test_global_afr_f <- multinom(ACMG ~ af_adj + afr_adj, data = clinvar) # ACMG = global_allele_freq + (afr_allele_freq - global_allele_frequency)
 test_ancestry_f <- multinom(ACMG ~ af_adj + nfe_adj + afr_adj + amr_adj + sas_adj, data = clinvar)
 
+# Part 2. Converts to Z scores
 z_global_f <- summary(test_global_f)$coefficients/summary(test_global_f)$standard.errors
 z_global_afr_f <- summary(test_global_afr_f)$coefficients/summary(test_global_afr_f)$standard.errors
 z_ancestry_f <- summary(test_ancestry_f)$coefficients/summary(test_ancestry_f)$standard.errors
 
+# Part 3. Gets P-values from Z scores
 p_global_f <- (1 - pnorm(abs(z_global_f), 0, 1))*2
 p_global_afr_f <- (1 - pnorm(abs(z_global_afr_f), 0, 1))*2
 p_ancestry_f <- (1 - pnorm(abs(z_ancestry_f), 0, 1))*2
 
-adj_fs <- data.frame(af_adj = c(0:100)/100)
+# Part 4. Plot the results
+adj_fs <- data.frame(af_adj = c(0:100)/100) # Lines between 0 and 1
 nfe_diffs <- data.frame(nfe_adj = 2*c(-50:50)/100)
 afr_diffs <- data.frame(afr_adj = 2*c(-50:50)/100)
 amr_diffs <- data.frame(amr_adj = 2*c(-50:50)/100)
@@ -314,6 +320,7 @@ ancestry_preds_melt <- melt(ancestry_preds, id.vars = c("af_adj", "nfe_adj", "af
 ### ---------- Code from here onwards should go into plotEffects.R ---------- ###
 
 #Type 1: Probability plots
+# IGNORE this section
 ggplot(global_preds_melt, aes(x = adj_fs, y = probability, colour = variable)) + geom_line() # + facet_grid(variable ~ ., scales="fixed")
 ggplot(ancestry_preds_melt, aes(x = adj_fs, y = probability, colour = variable)) + geom_line() # + facet_grid(variable ~ ., scales="fixed")
 ggplot(ancestry_preds_melt, aes(x = nfe_diffs, y = probability, colour = variable)) + geom_line() # + facet_grid(variable ~ ., scales="fixed")

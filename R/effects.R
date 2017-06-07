@@ -49,7 +49,7 @@ plotPopEffects <- function(mypops, popLabel, popColor, model){
     adj_fs <- data.frame(af_adj = 2*c(-50:50)/100) # Lines between -1 and 1
     d_pop <- paste("d", mypops, sep="_")
     test_model <- Effect(d_pop, model, xlevels = adj_fs)
-    myXLab = paste("AF(global) - AF(", paste(mypops, collapse="*") , ")", sep="")
+    myXLab = paste("AF(global) - AF(", paste(mypops, collapse="+") , ")", sep="")
     mainLabel = paste("Global + ", popLabel, sep="")
     plot(test_model, xlim=c(-1,1), ylim=c(0,1), rug=FALSE, color=popColor, xlab = myXLab, ylab = "Probability", main=mainLabel, par.settings = list(fontsize = list(text = 20, points = 20)))
   }

@@ -1,0 +1,182 @@
+#---------------------------------------------------------------
+# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
+# Author: Arturo Lopez Pineda <arturolp@stanford.edu>
+# With code from: Snehit Prabhu <snehit@stanford.edu>
+# Date: April 20, 2017
+#---------------------------------------------------------------
+
+library(shinydashboard)
+
+#---------------------------
+#Load once when app is launched
+#---------------------------
+
+# Load Scripts
+source("R/loadData.R")
+source("R/featurizeAFs.R")
+source("R/exploratoryTests.R")
+source("R/effects.R")
+
+# Settings
+pops <- data.frame(rbind(
+  c("afr", "African", "purple"),
+  c("amr", "American", "darkgreen"),
+  c("eas", "East Asian", "orange"),
+  c("sas", "South Asian", "gold"),
+  c("fin", "Finn", "pink"),
+  c("nfe", "Non-Finn European", "brown"),
+  c("oth", "Other", "tomato")
+))
+colnames(pops) <- c("symbol", "label", "color")
+
+
+# Load Data
+clinvar <- readData("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
+clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
+populations <- as.vector(pops$symbol)
+dataset <- setAFs(clinvar, c("adj", populations))
+dataset <- setResidualAFs(dataset, c("adj", populations))
+
+
+# Support Functions
+getLabel <- function(id_label){
+  ids = which(pops$symbol %in% id_label)
+  return(as.character(pops[ids, "label"]))
+}
+
+getColor <- function(id_label){
+  if(is.null(id_label)){
+    return("black")
+  } else{
+    ids = which(pops$symbol %in% id_label)
+    return(as.character(pops[ids, "color"]))
+  }
+}
+
+
+#---------------------------
+# Define server logic
+#---------------------------
+
+shinyServer(function(input, output) {
+
+
+  # 1A. Histogram Population Allele Frequency
+  #---------------------------
+  output$histogramPAF <- renderPlot({
+    histAFs(dataset, input$pop_explore, getColor(input$pop_explore))
+  })
+
+  # 1B. Histogram Global Allele Frequency
+  #---------------------------
+  output$histogramGAF <- renderPlot({
+    histResidualAFs(dataset, input$pop_explore, getColor(input$pop_explore))
+  })
+
+  # 2. Scatter Plot
+  #---------------------------
+  output$scatterAF <- renderPlot({
+
+    af_label <- paste("af_", input$pop_explore, sep="")
+    colorcode<-c("blue","lightgreen","red")
+    title_label <- paste("All vs. ", getLabel(input$pop_explore), sep = "")
+    y_label <- paste("AF(", getLabel(input$pop_explore) ,")", sep="")
+
+    scatterPlot(dataset, "af_adj", af_label, "ACMG", colorcode, title_label, "AF(global)", y_label)
+
+  })
+
+
+  # 3. Enrichment Plot
+  #---------------------------
+  output$enrichment <- renderPlot({
+
+    af_label <- paste("af_", input$pop_explore, sep="")
+    colorcode<-c("blue","lightgreen","red")
+    title_label <- paste("All vs. ", getLabel(input$pop_explore), sep = "")
+    y_label <- paste("AF(", getLabel(input$pop_explore) ,")", sep="")
+
+    testEnrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
+
+  })
+
+
+  # 4. Global and Multiple Populations Effects
+  #---------------------------
+  model.multi <- reactive({
+    mypops = input$pop_predict
+    model.multi <- fit_global_pop(dataset, mypops)
+  })
+
+  output$globalMultiPopEffects <- renderPlot({
+    mypops = input$pop_predict
+    model <- model.multi()
+    multiLabel = paste(getLabel(mypops), collapse=" + ")
+    myColors = getColor(mypops)[1]
+    plotPopEffects(mypops, multiLabel, myColors, model)
+  })
+
+  output$globalMultiLabel <- renderText({
+    model <- model.multi()
+    #zscore.global = getZscore(model)
+    #pvalue.global = getPvalue(zscore.global)
+    hardError = getHardError(model, dataset)
+    softError = getSoftError(model, dataset)
+    paste("Classification error (hard) = ", format(hardError, digits=3), ", ",
+          "Classification error (soft) = ", format(softError[2], digits=3), ", baseline = ", format(softError[1], digits=3),
+          collapse="")
+  })
+
+  calculateCVglobalMultiPop <- eventReactive(input$cvButtonGlobalMultiPop, {
+    mypops = c(input$pop_effects, input$multi_pop_effect)
+    accuracy = calculateCrossValidation(input$cvInputGlobalMultiPop, mypops, dataset)
+    paste("Accuracy = ", format(accuracy, digits=3), sep="")
+  })
+
+  output$globalMultiPopLabelCV <- renderText({
+    calculateCVglobalMultiPop()
+  })
+
+  calculatePTglobalMultiPop <- eventReactive(input$ptButtonGlobalMultiPop, {
+    pvalue = calculatePermutationTesting(input$ptInputGlogalMultiPop, NULL, dataset)
+    paste("P-Value = ", format(pvalue, digits=3), sep="")
+  })
+
+  output$globalMultiPopLabelPT <- renderText({
+    calculatePTglobalMultiPop()
+  })
+
+
+
+  # 5. Generate Reports
+  #---------------------------
+
+
+  output$reportExplore <- downloadHandler(
+    # For PDF output, change this to "report.pdf"
+    filename = "reportExplore.pdf",
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      tempReport <- file.path(tempdir(), "report.Rmd")
+      file.copy("report.Rmd", tempReport, overwrite = TRUE)
+
+      # Set up parameters to pass to Rmd document
+      params <- list(n = input$pop_explore)
+
+      # Knit the document, passing in the `params` list, and eval it in a
+      # child of the global environment (this isolates the code in the document
+      # from the code in this app).
+      rmarkdown::render(tempReport, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+
+
+
+})
+
+

@@ -119,7 +119,7 @@ calculateCrossValidation <- function(percentage, pops, clinvar){
     trainIndex <- createDataPartition(clinvar$CLNSIG, p = percentage, list=FALSE, times=1)
 
     #Train the model
-    fit_global_model(clinvar[trainIndex,], pops)
+    model = fit_global_pop(clinvar[trainIndex,], pops)
 
     # The test
     fitted_model <- predict(model, newdata = clinvar[-trainIndex,], type = "class", se = TRUE)
@@ -139,11 +139,12 @@ calculateCrossValidation <- function(percentage, pops, clinvar){
 #6. Permutation testing for significance of predictor
 calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
 
-  candidate = 0
+
+  randomModelMoreSignificant = 0
 
   #0. Calculate the model proportions
   #Train the model
-  model = fit_global_pop(clinvar, pops)
+  model = fit_global_pop(clinvar, NULL) #The assumption is that the baseline model is always only Global
 
   softError = getSoftError(model, clinvar)
   softError_baseline = softError[1]
@@ -159,11 +160,7 @@ calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
     real_class <- model.matrix( ~ 0 + ACMG, clinvar_new)
 
     #2. Train a new multinomial model based on a shuffled dataset
-    if(is.null(pops)){
-      model <- fit_global_model(clinvar_new)
-    } else {
-      model = fit_global_pop(clinvar_new, pops)
-    }
+    model <- fit_global_pop(clinvar_new, pops)
 
 
     softErrorIter = getSoftError(model, clinvar)
@@ -177,11 +174,12 @@ calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
     #softError_new <- sum((1-real_class)*fitted_new)/total
 
     #5. Count if it is more extreme than the original data
-    if(softError_baseline-softError_model > softErrorIter_baseline-softErrorIter_model){
-      candidate = candidate + 1
+    if(softError_baseline-softError_model < softErrorIter_baseline-softErrorIter_model){
+      randomModelMoreSignificant = randomModelMoreSignificant + 1
     }
   }
 
-  return(candidate/numberOfPermutations)
+  return(randomModelMoreSignificant/numberOfPermutations)
+
 
 }

@@ -103,23 +103,34 @@ shinyServer(function(input, output) {
 
   # 4. Global and Multiple Populations Effects
   #---------------------------
-  model.multi <- reactive({
-    mypops = input$pop_predict
+  model.multi.baseline <- reactive({
+    mypops = input$pop_predict_baseline
     model.multi <- fit_global_pop(dataset, mypops)
   })
 
-  output$globalMultiPopEffects <- renderPlot({
-    mypops = input$pop_predict
-    model <- model.multi()
+  model.multi.model <- reactive({
+    mypops = input$pop_predict_model
+    model.multi <- fit_global_pop(dataset, mypops)
+  })
+
+  output$effectsBaseline <- renderPlot({
+    mypops = input$pop_predict_baseline
+    model <- model.multi.baseline()
     multiLabel = paste(getLabel(mypops), collapse=" + ")
     myColors = getColor(mypops)[1]
     plotPopEffects(mypops, multiLabel, myColors, model)
   })
 
-  output$globalMultiLabel <- renderText({
-    model <- model.multi()
-    #zscore.global = getZscore(model)
-    #pvalue.global = getPvalue(zscore.global)
+  output$effectsModel <- renderPlot({
+    mypops = input$pop_predict_model
+    model <- model.multi.model()
+    multiLabel = paste(getLabel(mypops), collapse=" + ")
+    myColors = getColor(mypops)[1]
+    plotPopEffects(mypops, multiLabel, myColors, model)
+  })
+
+  output$labelBaseline <- renderText({
+    model <- model.multi.baseline()
     hardError = getHardError(model, dataset)
     softError = getSoftError(model, dataset)
     paste("Classification error (hard) = ", format(hardError, digits=3), ", ",
@@ -127,18 +138,45 @@ shinyServer(function(input, output) {
           collapse="")
   })
 
-  calculateCVglobalMultiPop <- eventReactive(input$cvButtonGlobalMultiPop, {
-    mypops = c(input$pop_effects, input$multi_pop_effect)
-    accuracy = calculateCrossValidation(input$cvInputGlobalMultiPop, mypops, dataset)
-    paste("Accuracy = ", format(accuracy, digits=3), sep="")
+
+  output$labelModel <- renderText({
+    model <- model.multi.model()
+    hardError = getHardError(model, dataset)
+    softError = getSoftError(model, dataset)
+    paste("Classification error (hard) = ", format(hardError, digits=3), ", ",
+          "Classification error (soft) = ", format(softError[2], digits=3), ", baseline = ", format(softError[1], digits=3),
+          collapse="")
   })
 
-  output$globalMultiPopLabelCV <- renderText({
-    calculateCVglobalMultiPop()
+  #-----
+  # Calculate Cross Validation
+  #-----
+  calculateCVbaseline <- eventReactive(input$cvButtonBaseline, {
+    mypops = input$pop_predict_baseline
+    accuracy = calculateCrossValidation(input$cvInputBaseline, mypops, dataset)*100
+    paste("Misclassification Error = ", format(accuracy, digits=3), " %", sep="")
   })
 
+  output$cvResultBaseline <- renderText({
+    calculateCVbaseline()
+  })
+
+  calculateCVmodel <- eventReactive(input$cvButtonModel, {
+    mypops = input$pop_predict_model
+    accuracy = calculateCrossValidation(input$cvInputModel, mypops, dataset)*100
+    paste("Misclassification Error = ", format(accuracy, digits=3), " %", sep="")
+  })
+
+  output$cvResultModel <- renderText({
+    calculateCVmodel()
+  })
+
+  #-----
+  # Calculate Permutation Testing
+  #-----
   calculatePTglobalMultiPop <- eventReactive(input$ptButtonGlobalMultiPop, {
-    pvalue = calculatePermutationTesting(input$ptInputGlogalMultiPop, NULL, dataset)
+    mypops = input$pop_predict
+    pvalue = calculatePermutationTesting(input$ptInputGlogalMultiPop, mypops, dataset)
     paste("P-Value = ", format(pvalue, digits=3), sep="")
   })
 

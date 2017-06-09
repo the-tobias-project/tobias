@@ -113,27 +113,43 @@ body <- dashboardBody(
     tabItem(tabName = "predict",
             h1("Predict"),
             p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-            selectizeInput("pop_predict", "Choose 1 population", choices = pops, multiple=TRUE, options=list(maxItems=1)),
             downloadButton("reportPredict", "Generate report"),
             br(),
             h2("Effects"),
             br(),
             fluidRow(
-              column(width = 12,
+              column(width = 6,
                      box(width = NULL,
                          title = "Test of Global + Populations Effects", status = "primary", solidHeader = TRUE,
-                         collapsible = TRUE,
-                         plotOutput("globalMultiPopEffects", height = 400),
-                         textOutput("globalMultiLabel"),
-                         hr(),
+                         selectizeInput("pop_predict_baseline", "Choose Baseline model populations", choices = pops, multiple=TRUE),
+                         plotOutput("effectsBaseline", height = 400),
+                         textOutput("labelBaseline"),
                          h5("Cross Validation Leave-%-out:"),
-                         sliderInput("cvInputGlobalMultiPop", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
-                         actionButton("cvButtonGlobalMultiPop", "Calculate"),
+                         sliderInput("cvInputBaseline", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
+                         actionButton("cvButtonBaseline", "Calculate"),
                          br(), br(),
-                         textOutput("globalMultiPopLabelCV"),
-                         hr(),
+                         textOutput("cvResultBaseline")
+                     )
+              ),
+              column(width = 6,
+                     box(width = NULL,
+                         title = "Test of Global + Populations Effects", status = "primary", solidHeader = TRUE,
+                         selectizeInput("pop_predict_model", "Choose Full model populations", choices = pops, multiple=TRUE),
+                         plotOutput("effectsModel", height = 400),
+                         textOutput("labelModel"),
+                         h5("Cross Validation Leave-%-out:"),
+                         sliderInput("cvInputModel", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
+                         actionButton("cvButtonModel", "Calculate"),
+                         br(), br(),
+                         textOutput("cvResultModel")
+                     )
+              )
+            ),
+            fluidRow(
+              column(width=12,
+                     box(width = NULL,
                          h5("Permutation Testing (number):"),
-                         sliderInput("ptInputGlogalMultiPop", NULL, value=1000, min = 1000, max = 10000, step=1000, tick=TRUE),
+                         sliderInput("ptInputGlogalMultiPop", NULL, value=10, min = 10, max = 1000, step=10, tick=TRUE),
                          actionButton("ptButtonGlobalMultiPop", "Calculate"),
                          br(), br(),
                          textOutput("globalMultiPopLabelPT")
@@ -142,8 +158,6 @@ body <- dashboardBody(
             )
     )
     #end of tab
-
-
   )
 )
 #end of body

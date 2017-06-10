@@ -19,29 +19,6 @@ pops <-list(
 )
 
 
-#---------------------------
-# expSlider javascript function
-#---------------------------
-JS.expify <-
-  "
-// function to exponentiate a sliderInput
-function expSlider (sliderId, sci = false) {
-$('#'+sliderId).data('ionRangeSlider').update({
-'prettify': function (num) { return ('10<sup>'+num+'</sup>'); }
-})
-}"
-
-# call expSlider for each relevant sliderInput
-JS.onload <-
-  "
-// execute upon document loading
-$(document).ready(function() {
-// wait a few ms to allow other scripts to execute
-setTimeout(function() {
-// include call for each slider
-expSlider('ptInputGlogalMultiPop', sci = true)
-}, 2)})
-"
 
 # Header of the application
 #---------------------------
@@ -136,37 +113,54 @@ body <- dashboardBody(
     tabItem(tabName = "predict",
             h1("Predict"),
             p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-            selectizeInput("pop_predict", "Choose 1 or more populations", choices = pops, multiple=TRUE),
             downloadButton("reportPredict", "Generate report"),
             br(),
             h2("Effects"),
             br(),
             fluidRow(
-              column(width = 12,
+              column(width = 6,
                      box(width = NULL,
-                         title = "Test of Global + Populations Effects", status = "primary", solidHeader = TRUE,
-                         collapsible = TRUE,
-                         plotOutput("globalMultiPopEffects", height = 400),
-                         textOutput("globalMultiLabel"),
+                         title = "Baseline Model", status = "primary", solidHeader = TRUE,
+                         selectizeInput("pop_predict_baseline", "Choose Baseline model populations", choices = pops, multiple=TRUE),
+                         plotOutput("effectsBaseline", height = 400),
+                         htmlOutput("labelBaseline"),
                          hr(),
                          h5("Cross Validation Leave-%-out:"),
-                         sliderInput("cvInputGlobalMultiPop", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
-                         actionButton("cvButtonGlobalMultiPop", "Calculate"),
+                         sliderInput("cvInputBaseline", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
+                         actionButton("cvButtonBaseline", "Calculate"),
                          br(), br(),
-                         textOutput("globalMultiPopLabelCV"),
+                         textOutput("cvResultBaseline")
+                     )
+              ),
+              column(width = 6,
+                     box(width = NULL,
+                         title = "Full Model", status = "primary", solidHeader = TRUE,
+                         selectizeInput("pop_predict_model", "Choose Full model populations", choices = pops, multiple=TRUE),
+                         plotOutput("effectsModel", height = 400),
+                         htmlOutput("labelModel"),
                          hr(),
-                         h5("Permutation Testing (number):"),
-                         sliderInput("ptInputGlogalMultiPop", NULL, value=2, min = 2, max = 5, step=1, tick=TRUE),
-                         actionButton("ptButtonGlobalMultiPop", "Calculate"),
+                         h5("Cross Validation Leave-%-out:"),
+                         sliderInput("cvInputModel", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
+                         actionButton("cvButtonModel", "Calculate"),
                          br(), br(),
-                         textOutput("globalMultiPopLabelPT")
+                         textOutput("cvResultModel")
                      )
               )
-            )
+            ),
+            fluidRow(
+              column(width=12,
+                     box(width = NULL,
+                         h5("Permutation Testing (number):"),
+                         sliderInput("sliderPT", NULL, value=10, min = 10, max = 1000, step=10, tick=TRUE),
+                         actionButton("buttonPT", "Calculate"),
+                         br(), br(),
+                         textOutput("ptResult")
+                     )
+              )
+            ),
+            br(), br()
     )
     #end of tab
-
-
   )
 )
 #end of body

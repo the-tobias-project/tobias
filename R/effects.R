@@ -49,7 +49,7 @@ plotPopEffects <- function(mypops, popLabel, popColor, model){
     adj_fs <- data.frame(af_adj = 2*c(-50:50)/100) # Lines between -1 and 1
     d_pop <- paste("d", mypops, sep="_")
     test_model <- Effect(d_pop, model, xlevels = adj_fs)
-    myXLab = paste("AF(global) - AF(", paste(mypops, collapse="*") , ")", sep="")
+    myXLab = paste("AF(global) - AF(", paste(mypops, collapse="+") , ")", sep="")
     mainLabel = paste("Global + ", popLabel, sep="")
     plot(test_model, xlim=c(-1,1), ylim=c(0,1), rug=FALSE, color=popColor, xlab = myXLab, ylab = "Probability", main=mainLabel, par.settings = list(fontsize = list(text = 20, points = 20)))
   }
@@ -119,7 +119,7 @@ calculateCrossValidation <- function(percentage, pops, clinvar){
     trainIndex <- createDataPartition(clinvar$CLNSIG, p = percentage, list=FALSE, times=1)
 
     #Train the model
-    fit_global_model(clinvar[trainIndex,], pops)
+    model = fit_global_pop(clinvar[trainIndex,], pops)
 
     # The test
     fitted_model <- predict(model, newdata = clinvar[-trainIndex,], type = "class", se = TRUE)
@@ -137,16 +137,15 @@ calculateCrossValidation <- function(percentage, pops, clinvar){
 
 
 #6. Permutation testing for significance of predictor
-calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
+calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermutations, clinvar){
 
-  candidate = 0
+  randomModelMoreSignificant = 0
 
   #0. Calculate the model proportions
-  #Train the model
-  model = fit_global_pop(clinvar, pops)
-
+  #Train the baseline
+  baseline = fit_global_pop(clinvar, baseline.pops)
   softError = getSoftError(model, clinvar)
-  softError_baseline = softError[1]
+  softError_apriori = softError[1]
   softError_model = softError[2]
 
 
@@ -159,29 +158,18 @@ calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
     real_class <- model.matrix( ~ 0 + ACMG, clinvar_new)
 
     #2. Train a new multinomial model based on a shuffled dataset
-    if(is.null(pops)){
-      model <- fit_global_model(clinvar_new)
-    } else {
-      model = fit_global_pop(clinvar_new, pops)
-    }
-
-
+    model <- fit_global_pop(clinvar_new, model.pops)
     softErrorIter = getSoftError(model, clinvar)
-    softErrorIter_baseline = softErrorIter[1]
+    softErrorIter_apriori = softErrorIter[1]
     softErrorIter_model = softErrorIter[2]
 
-    #3. Make predictions using this model train
-    #fitted_new <- predict(model, newdata = clinvar_new, type = "probs", se = TRUE)
-
-    #4. Calculate average misclassification per variant if you use AF diff encoding
-    #softError_new <- sum((1-real_class)*fitted_new)/total
-
-    #5. Count if it is more extreme than the original data
-    if(softError_baseline-softError_model > softErrorIter_baseline-softErrorIter_model){
-      candidate = candidate + 1
+    #3. Count if it is more extreme than the original data
+    if(softError_apriori-softError_model < softErrorIter_apriori-softErrorIter_model){
+      randomModelMoreSignificant = randomModelMoreSignificant + 1
     }
   }
 
-  return(candidate/numberOfPermutations)
+  return(randomModelMoreSignificant/numberOfPermutations)
+
 
 }

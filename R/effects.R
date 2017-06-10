@@ -137,17 +137,15 @@ calculateCrossValidation <- function(percentage, pops, clinvar){
 
 
 #6. Permutation testing for significance of predictor
-calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
-
+calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermutations, clinvar){
 
   randomModelMoreSignificant = 0
 
   #0. Calculate the model proportions
-  #Train the model
-  model = fit_global_pop(clinvar, NULL) #The assumption is that the baseline model is always only Global
-
+  #Train the baseline
+  baseline = fit_global_pop(clinvar, baseline.pops)
   softError = getSoftError(model, clinvar)
-  softError_baseline = softError[1]
+  softError_apriori = softError[1]
   softError_model = softError[2]
 
 
@@ -160,21 +158,13 @@ calculatePermutationTesting <- function(numberOfPermutations, pops, clinvar){
     real_class <- model.matrix( ~ 0 + ACMG, clinvar_new)
 
     #2. Train a new multinomial model based on a shuffled dataset
-    model <- fit_global_pop(clinvar_new, pops)
-
-
+    model <- fit_global_pop(clinvar_new, model.pops)
     softErrorIter = getSoftError(model, clinvar)
-    softErrorIter_baseline = softErrorIter[1]
+    softErrorIter_apriori = softErrorIter[1]
     softErrorIter_model = softErrorIter[2]
 
-    #3. Make predictions using this model train
-    #fitted_new <- predict(model, newdata = clinvar_new, type = "probs", se = TRUE)
-
-    #4. Calculate average misclassification per variant if you use AF diff encoding
-    #softError_new <- sum((1-real_class)*fitted_new)/total
-
-    #5. Count if it is more extreme than the original data
-    if(softError_baseline-softError_model < softErrorIter_baseline-softErrorIter_model){
+    #3. Count if it is more extreme than the original data
+    if(softError_apriori-softError_model < softErrorIter_apriori-softErrorIter_model){
       randomModelMoreSignificant = randomModelMoreSignificant + 1
     }
   }

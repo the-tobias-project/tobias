@@ -129,23 +129,25 @@ shinyServer(function(input, output) {
     plotPopEffects(mypops, multiLabel, myColors, model)
   })
 
-  output$labelBaseline <- renderText({
+  output$labelBaseline <- renderUI({
     model <- model.multi.baseline()
     hardError = getHardError(model, dataset)
     softError = getSoftError(model, dataset)
-    paste("Classification error (hard) = ", format(hardError, digits=3), ", ",
-          "Classification error (soft) = ", format(softError[2], digits=3), ", baseline = ", format(softError[1], digits=3),
-          collapse="")
+    hard <-  paste("Classification error (hard) = ", format(hardError, digits=3))
+    soft <- paste("Classification error (soft) = ", format(softError[2], digits=3))
+    baseline <- paste("Classification error (a priori) = ", format(softError[1], digits=3))
+    HTML(paste(hard, soft, baseline, sep = "<br />"))
   })
 
 
-  output$labelModel <- renderText({
+  output$labelModel <- renderUI({
     model <- model.multi.model()
     hardError = getHardError(model, dataset)
     softError = getSoftError(model, dataset)
-    paste("Classification error (hard) = ", format(hardError, digits=3), ", ",
-          "Classification error (soft) = ", format(softError[2], digits=3), ", baseline = ", format(softError[1], digits=3),
-          collapse="")
+    hard <-  paste("Classification error (hard) = ", format(hardError, digits=3))
+    soft <- paste("Classification error (soft) = ", format(softError[2], digits=3))
+    baseline <- paste("Classification error (a priori) = ", format(softError[1], digits=3))
+    HTML(paste(hard, soft, baseline, sep = "<br />"))
   })
 
   #-----
@@ -174,14 +176,16 @@ shinyServer(function(input, output) {
   #-----
   # Calculate Permutation Testing
   #-----
-  calculatePTglobalMultiPop <- eventReactive(input$ptButtonGlobalMultiPop, {
-    mypops = input$pop_predict
-    pvalue = calculatePermutationTesting(input$ptInputGlogalMultiPop, mypops, dataset)
+  calculatePT <- eventReactive(input$buttonPT, {
+    baseline = input$pop_predict_baseline
+    model = input$pop_predict_model
+    numberOfPermutations = input$sliderPT
+    pvalue = calculatePermutationTesting(baseline, model, numberOfPermutations, dataset)
     paste("P-Value = ", format(pvalue, digits=3), sep="")
   })
 
-  output$globalMultiPopLabelPT <- renderText({
-    calculatePTglobalMultiPop()
+  output$ptResult <- renderText({
+    calculatePT()
   })
 
 

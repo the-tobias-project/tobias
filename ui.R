@@ -120,10 +120,11 @@ body <- dashboardBody(
             fluidRow(
               column(width = 6,
                      box(width = NULL,
-                         title = "Test of Global + Populations Effects", status = "primary", solidHeader = TRUE,
+                         title = "Baseline Model", status = "primary", solidHeader = TRUE,
                          selectizeInput("pop_predict_baseline", "Choose Baseline model populations", choices = pops, multiple=TRUE),
                          plotOutput("effectsBaseline", height = 400),
-                         textOutput("labelBaseline"),
+                         htmlOutput("labelBaseline"),
+                         hr(),
                          h5("Cross Validation Leave-%-out:"),
                          sliderInput("cvInputBaseline", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
                          actionButton("cvButtonBaseline", "Calculate"),
@@ -133,10 +134,11 @@ body <- dashboardBody(
               ),
               column(width = 6,
                      box(width = NULL,
-                         title = "Test of Global + Populations Effects", status = "primary", solidHeader = TRUE,
+                         title = "Full Model", status = "primary", solidHeader = TRUE,
                          selectizeInput("pop_predict_model", "Choose Full model populations", choices = pops, multiple=TRUE),
                          plotOutput("effectsModel", height = 400),
-                         textOutput("labelModel"),
+                         htmlOutput("labelModel"),
+                         hr(),
                          h5("Cross Validation Leave-%-out:"),
                          sliderInput("cvInputModel", NULL, value=10, min = 10, max = 100, step=10, tick=FALSE),
                          actionButton("cvButtonModel", "Calculate"),
@@ -149,13 +151,14 @@ body <- dashboardBody(
               column(width=12,
                      box(width = NULL,
                          h5("Permutation Testing (number):"),
-                         sliderInput("ptInputGlogalMultiPop", NULL, value=10, min = 10, max = 1000, step=10, tick=TRUE),
-                         actionButton("ptButtonGlobalMultiPop", "Calculate"),
+                         sliderInput("sliderPT", NULL, value=10, min = 10, max = 1000, step=10, tick=TRUE),
+                         actionButton("buttonPT", "Calculate"),
                          br(), br(),
-                         textOutput("globalMultiPopLabelPT")
+                         textOutput("ptResult")
                      )
               )
-            )
+            ),
+            br(), br()
     )
     #end of tab
   )

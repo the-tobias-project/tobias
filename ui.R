@@ -110,8 +110,8 @@ body <- dashboardBody(
 
     # Third tab content
     tabItem(tabName = "predict",
-            h1("Predict"),
-            p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+            h1("Predictive Modeling"),
+            p("Here, you can test whether your patient's ancestry significantly influences the interpretation assigned to variants in the genes you are testing. Use the columns to compare two models, each accounting (or not accounting) for variant frequency in a set of populations. See how these influence your ability to predict a variant's interpretation. Then run some permutations to check whether these differences are anecdotal, or statistically significant."),
             downloadButton("reportPredict", "Generate report"),
             br(),
             h2("Effects"),

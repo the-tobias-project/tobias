@@ -1,0 +1,25 @@
+---
+title: "Predict report"
+output: pdf_document
+params:
+  pop1: "NA"
+  pop2: "NA"
+---
+
+You have chosen to compare two ancestry models.
+
+
+# Baseline model
+
+```{r}
+# The baseline population selected from dropdown menu.
+params$pop1
+
+```
+
+# Alternative model
+```{r}
+# The alternative population selected from dropdown menu.
+params$pop2
+
+```

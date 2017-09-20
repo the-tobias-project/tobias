@@ -1,0 +1,11 @@
+\documentclass{article}
+
+\begin{document}
+
+\title{Report}
+
+<<names>>=
+input$pop_predict_baseline
+@
+
+\end{document}

@@ -1,0 +1,3 @@
+---
+title: "Dynamic report"
+output: pdf_document

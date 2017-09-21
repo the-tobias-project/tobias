@@ -1,0 +1,12 @@
+name: tobias
+title:
+username:
+account: dbquality
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 217187
+bundleId: 991404
+url: https://dbquality.shinyapps.io/tobias/
+when: 1506017700.72556
+asMultiple: FALSE
+asStatic: FALSE

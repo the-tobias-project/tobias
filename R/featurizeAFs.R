@@ -57,8 +57,8 @@ histAFs <- function(dataset, poplabels, colorName) {
   i=1
   for (pop in poplabels) {
     assign("popfreq", paste("af_", pop, sep=""))
-    #opar=par(ps=20, font=10)
-    hist(dataset[,popfreq], breaks=100, cex=10, main="", col=colorName, xlim=c(0,1), ylim=c(0,70000),xlab=paste("AF(", pop, ")", sep=""), ylab="Variants in DB")
+    opar=par(ps=20, font=7)
+    hist(dataset[,popfreq], breaks=100, cex=10, main="", col=colorName, xlim=c(0,1), ylim=c(0,70000),xlab=paste("AF(", pop, ")", sep=""), ylab="# variants")
     opar
   }
 }
@@ -66,8 +66,8 @@ histAFs <- function(dataset, poplabels, colorName) {
 histResidualAFs <- function(dataset, poplabels, colorName) {
   for (pop in poplabels) {
     assign("dfreq", paste("d_", pop, sep=""))
-    #opar=par(ps=20, font=10)
-    hist(dataset[,dfreq], breaks=100, cex=10, main="", col=colorName, xlim=c(-1,1), ylim=c(0,70000), xlab=paste("AF(", pop, ") - AF(global)", sep=""), ylab="Variants in DB")
+    opar=par(ps=20, font=7)
+    hist(dataset[,dfreq], breaks=100, cex=10, main="", col=colorName, xlim=c(-1,1), ylim=c(0,70000), xlab=paste("AF(", pop, ") - AF(global)", sep=""), ylab="# variants")
     opar
   }
 }

@@ -74,8 +74,11 @@ body <- dashboardBody(
 
     # Second tab content
     tabItem(tabName = "explore",
-            h1("Explore"),
-            p("Exploratory tools to visualize summary statistics of your datasets"),
+            h1("Explore Potential Biases in Database"),
+            p("This explorer lets you to visualize population allele frequencies of variants recorded in your clinical database."), 
+            p("1. Please choose a population of your patient/case."),
+            p("2. For variants in this database, confirm that AFs in patient population conform to global averages."),
+            br(), 
             selectInput("pop_explore", "Choose population", choices = pops, selected="amr"),
             downloadButton("reportExplore", "Generate report"),
             br(),
@@ -95,7 +98,7 @@ body <- dashboardBody(
               )
             ),
             br(),
-            h2("Allele Frequency and Clinical Interpretation"),
+            h2("Allele Frequency Scatters"),
             fluidRow(
               column(width = 12,
                      box(width = NULL,
@@ -110,8 +113,12 @@ body <- dashboardBody(
     
     # Third tab content
     tabItem(tabName = "test",
-            h1("Tests for enrichment"),
-            p("Test whether interpretations recorded on this database are relevant for your population"),
+            h1("Tests For Bias In Database"),
+            p("Test whether variant assertions recorded in this database are correlated with patient's genetic ancestry"),
+            p("1. Choose population of your patient/case."),
+            p("2. Choose a cutoff, marking variants whose AFs are \"appreciably different\" between patient population and global average."),
+            p("3. Apply non-parametric test to check whether statistically significant bias exists."),
+            br(), 
             selectInput("pop_test", "Choose population", choices = pops, selected="amr"),
             downloadButton("reportTest", "Generate report"),
             br(),
@@ -130,8 +137,12 @@ body <- dashboardBody(
     
     # Fourth tab content
     tabItem(tabName = "predict",
-            h1("Predictive Modeling"),
-            p("Here, you can predict a variant's interpretation based (purely on) population frequency. Test whether AFs significantly influence the interpretation assigned to variants in the genes you are testing. Use the columns to compare two models, each accounting (or not accounting) for variant frequency in a set of populations. See how these influence your ability to predict a variant's interpretation. Then run some permutations to check whether these differences are anecdotal, or statistically significant."),
+            h1("Predict Bias In Database"),
+            p("As a final confirmatory step, check whether you can predict a variant's interpretation based (purely on) population frequency."), 
+            p("1. Keep baseline-model fixed. For the alternate model, choose population of your patient/case. Choose multiple populations in case of admixed-patients"),
+            p("2. Check whether the regression model can predict variant interpretations, using only AF to predict outcome. Better predictive ability suggests bias in database"),
+            p("3. Confirm statistical significance of trained model by running permutation tests to calculate a p-value"),
+            br(), 
             downloadButton("reportPredict", "Generate report"),
             br(),
             h2("Effects"),

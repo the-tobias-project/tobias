@@ -11,10 +11,14 @@ library(shinydashboard)
 # Define UI for application
 #---------------------------
 pops <-list(
+  # "European" = list("Finn"="fin", "Non-Finn"="nfe"),
+  # "Asia" = list("East Asian"="eas", "South Asian"="sas"),
   "African" = "afr",
-  "American" = "amr",
-  "Asia" = list("East Asian"="eas", "South Asian"="sas"),
-  "Europe" = list("Finn"="fin", "Non-Finn"="nfe"),
+  "Non-Finn European"="nfe",
+  "Finnish European"="fin",
+  "East Asian"="eas",
+  "South Asian"="sas",
+  "Native American" = "amr",
   "Other" = "oth"
 )
 
@@ -32,7 +36,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(id = "tabs",
               menuItem("Home", tabName = "home", icon = icon("home")),
               menuItem("Explore", tabName = "explore", icon = icon("puzzle-piece")),
-              menuItem("Predict", tabName = "predict", icon = icon("snowflake-o"), selected = TRUE)
+              menuItem("Test", tabName = "test", icon = icon("bar-chart")),
+              menuItem("Predict", tabName = "predict", icon = icon("line-chart"), selected = TRUE)
   )
 )
 #end of sidebar
@@ -46,7 +51,7 @@ body <- dashboardBody(
 
     # First tab content
     tabItem(tabName = "home",
-            h1("Tobias (Tests of bias)"),
+            h1("TOBIAS (Tests of bias)"),
             p("is a suite of exploratory statistical tests for detecting and untangling the sources of bias that can influence genetic test interpretation. Our initial release (version 1) focuses on the marker of genetic ancestry. Through a variety of hypotheses and models, we ask whether this marker - when ignored - can confound the clinical interpretation of a genetic lesion observed in a patient. Asking questions like these is made possible by data that is painstakingly aggregated and freely published by two resources: ClinVar and ExAC."),
             fluidRow(
               column(width = 6,
@@ -70,48 +75,63 @@ body <- dashboardBody(
     # Second tab content
     tabItem(tabName = "explore",
             h1("Explore"),
-            p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-            selectInput("pop_explore", "Choose 1 population", choices = pops, selected="amr"),
+            p("Exploratory tools to visualize summary statistics of your datasets"),
+            selectInput("pop_explore", "Choose population", choices = pops, selected="amr"),
             downloadButton("reportExplore", "Generate report"),
             br(),
-            h2("Histograms"),
+            h2("Allele Frequency Histograms"),
             fluidRow(
               column(width = 6,
                      box(width = NULL,
-                         title = "Histogram of Population Allele Frequency", status = "primary",
+                         title = "Population AF", status = "primary",
                          plotOutput("histogramPAF", height = 300)
                      )
               ),
               column(width = 6,
                      box(width = NULL,
-                         title = "Histogram of Global Allele Frequency", status = "primary",
+                         title = "Population AF - Globally Averaged AF", status = "primary",
                          plotOutput("histogramGAF", height = 300)
                      )
               )
             ),
             br(),
-            h2("Scatter Plot and Enrichment"),
+            h2("Allele Frequency and Clinical Interpretation"),
             fluidRow(
-              column(width = 6,
+              column(width = 12,
                      box(width = NULL,
-                         title = "Scatter plot of Population Allele Frequency", status = "primary",
+                         title = "Population AF vs Global AF (color coded by interpretation)", status = "primary",
                          plotOutput("scatterAF", height = 500)
                      )
-              ),
-              column(width = 6,
+              )
+            ),
+            br()
+    ),
+    #end of tab
+    
+    # Third tab content
+    tabItem(tabName = "test",
+            h1("Tests for enrichment"),
+            p("Test whether interpretations recorded on this database are relevant for your population"),
+            selectInput("pop_test", "Choose population", choices = pops, selected="amr"),
+            downloadButton("reportTest", "Generate report"),
+            br(),
+            h2("Are variant interpretations independent of their population AFs?"),
+            br(),
+            fluidRow(
+              column(width = 12,
                      box(width = NULL,
-                         title = "Test of Enrichement", status = "primary",
+                         title = "Population-based differences in allelic interpretation", status = "primary",
                          plotOutput("enrichment", height = 500)
                      )
               )
             )
-    ),
+    ), 
     #end of tab
-
-    # Third tab content
+    
+    # Fourth tab content
     tabItem(tabName = "predict",
             h1("Predictive Modeling"),
-            p("Here, you can test whether your patient's ancestry significantly influences the interpretation assigned to variants in the genes you are testing. Use the columns to compare two models, each accounting (or not accounting) for variant frequency in a set of populations. See how these influence your ability to predict a variant's interpretation. Then run some permutations to check whether these differences are anecdotal, or statistically significant."),
+            p("Here, you can predict a variant's interpretation based (purely on) population frequency. Test whether AFs significantly influence the interpretation assigned to variants in the genes you are testing. Use the columns to compare two models, each accounting (or not accounting) for variant frequency in a set of populations. See how these influence your ability to predict a variant's interpretation. Then run some permutations to check whether these differences are anecdotal, or statistically significant."),
             downloadButton("reportPredict", "Generate report"),
             br(),
             h2("Effects"),

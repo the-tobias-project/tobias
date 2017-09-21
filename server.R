@@ -91,10 +91,10 @@ shinyServer(function(input, output) {
   #---------------------------
   output$enrichment <- renderPlot({
 
-    af_label <- paste("af_", input$pop_explore, sep="")
+    af_label <- paste("af_", input$pop_test, sep="")
     colorcode<-c("blue","lightgreen","red")
-    title_label <- paste("All vs. ", getLabel(input$pop_explore), sep = "")
-    y_label <- paste("AF(", getLabel(input$pop_explore) ,")", sep="")
+    title_label <- paste("All vs. ", getLabel(input$pop_test), sep = "")
+    y_label <- paste("AF(", getLabel(input$pop_test) ,")", sep="")
 
     testEnrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
 

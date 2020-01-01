@@ -6,6 +6,8 @@
 #---------------------------------------------------------------
 
 library(shinydashboard)
+library(knitr)
+library(rmarkdown)
 
 #---------------------------
 #Load once when app is launched
@@ -108,7 +110,7 @@ shinyServer(function(input, output) {
     model.multi <- fit_global_pop(dataset, mypops)
   })
 
-  model.multi.model <- reactive({
+  model.multi.alternative <- reactive({
     mypops = input$pop_predict_model
     model.multi <- fit_global_pop(dataset, mypops)
   })
@@ -123,7 +125,7 @@ shinyServer(function(input, output) {
 
   output$effectsModel <- renderPlot({
     mypops = input$pop_predict_model
-    model <- model.multi.model()
+    model <- model.multi.alternative()
     multiLabel = paste(getLabel(mypops), collapse=" + ")
     myColors = getColor(mypops)[1]
     plotPopEffects(mypops, multiLabel, myColors, model)
@@ -141,7 +143,7 @@ shinyServer(function(input, output) {
 
 
   output$labelModel <- renderUI({
-    model <- model.multi.model()
+    model <- model.multi.alternative()
     hardError = getHardError(model, dataset)
     softError = getSoftError(model, dataset)
     hard <-  paste("Classification error (hard) = ", format(hardError, digits=3))
@@ -194,27 +196,34 @@ shinyServer(function(input, output) {
   #---------------------------
 
 
-  output$reportExplore <- downloadHandler(
-    # For PDF output, change this to "report.pdf"
-    filename = "reportExplore.pdf",
+  # output$reportPredict <- downloadHandler(
+  #   filename = "myreportpredict.pdf",
+  #   content = function(file) {
+  #     out = knit2pdf('input.Rnw', clean = TRUE)
+  #     file.rename(out, file)
+  #   },
+  #
+  #   contentType = 'application/pdf'
+  # )
+
+
+  output$reportPredict <- downloadHandler(
+    filename = "my-report-predict.pdf",
+
     content = function(file) {
-      # Copy the report file to a temporary directory before processing it, in
-      # case we don't have write permissions to the current working dir (which
-      # can happen when deployed).
-      tempReport <- file.path(tempdir(), "report.Rmd")
-      file.copy("report.Rmd", tempReport, overwrite = TRUE)
 
-      # Set up parameters to pass to Rmd document
-      params <- list(n = input$pop_explore)
+      # Set up parameters
+      params <- list(pop1 = getLabel(input$pop_predict_baseline),
+                     pop2 = getLabel(input$pop_predict_model)
+                    )
 
-      # Knit the document, passing in the `params` list, and eval it in a
-      # child of the global environment (this isolates the code in the document
-      # from the code in this app).
-      rmarkdown::render(tempReport, output_file = file,
+      # Knit the document
+      rmarkdown::render("report.Rmd", output_format="pdf_document",
                         params = params,
-                        envir = new.env(parent = globalenv())
-      )
+                        output_file = file,
+                        envir = new.env())
     }
+
   )
 
 

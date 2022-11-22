@@ -6,16 +6,17 @@
 #---------------------------------------------------------------
 
 library(shinydashboard)
+library(tobias)
 
 #---------------------------
 #Load once when app is launched
 #---------------------------
 
 # Load Scripts
-source("R/loadData.R")
-source("R/featurizeAFs.R")
-source("R/exploratoryTests.R")
-source("R/effects.R")
+#source("R/loadData.R")
+#source("R/featurizeAFs.R")
+#source("R/exploratoryTests.R")
+#source("R/effects.R")
 
 # Settings
 pops <- data.frame(rbind(

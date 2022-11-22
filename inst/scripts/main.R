@@ -7,7 +7,7 @@
 #setwd("/Users/snehit/dev/tobias/")
 setwd("../")
 
-source("R/loadData.R")
+source("loadData.R")
 clinvar <- readData("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
 
 source("R/featurizeAFs.R")

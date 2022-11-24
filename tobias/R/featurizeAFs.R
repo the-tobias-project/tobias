@@ -1,15 +1,20 @@
-#!/usr/bin/Rscript
 
-#---------------------------------------------------------------
-# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data) Author: Snehit
-# Prabhu <snehit@stanford.edu>
-#---------------------------------------------------------------
 require(scales)
 require(foreign)
 require(nnet)
 require(ggplot2)
 require(reshape2)
 require(effects)
+
+
+
+#' setAFs
+#'
+#'@description
+#'
+#' @param dataset
+#' @param poplabels
+#' @export
 
 setAFs <- function(dataset, poplabels) {
     # c('adj', 'nfe', 'afr', 'amr', 'sas', 'eas', 'fin', 'oth')
@@ -25,8 +30,16 @@ setAFs <- function(dataset, poplabels) {
         dataset[, freq] <- dataset[, allele]/pmax(dataset[, total], 1)
         # End of MODIFIED
     }
-    return(dataset)
+    dataset
 }
+
+#' setResidualAFs
+#'
+#'@description
+#'
+#' @param dataset
+#' @param poplabels
+#' @export
 
 setResidualAFs <- function(dataset, poplabels) {
     for (pop in poplabels) {
@@ -46,12 +59,21 @@ setResidualAFs <- function(dataset, poplabels) {
         range(dataset[, dfreq])
         mean(dataset[, dfreq])
     }
-    return(dataset)
+    dataset
 }
 
+#' histAFs
+#'
+#'@description
+#'
+#' @param dataset
+#' @param poplabels
+#' @param colorName
+#' @export
 # Can we split this function into two functions?  One will call the for loop
 # for all populations in the API Another will create individual histograms,
 # also used by the UI
+
 histAFs <- function(dataset, poplabels, colorName) {
     i = 1
     for (pop in poplabels) {
@@ -64,6 +86,15 @@ histAFs <- function(dataset, poplabels, colorName) {
     }
 }
 
+#' histResidualAFs
+#'
+#'@description
+#'
+#' @param dataset
+#' @param poplabels
+#' @param colorName
+#' @export
+
 histResidualAFs <- function(dataset, poplabels, colorName) {
     for (pop in poplabels) {
         assign("dfreq", paste("d_", pop, sep = ""))
@@ -74,6 +105,20 @@ histResidualAFs <- function(dataset, poplabels, colorName) {
         opar
     }
 }
+
+#' scatterPlot
+#'
+#'@description
+#'
+#' @param dataset
+#' @param feature1
+#' @param feature2
+#' @param colorByClass
+#' @param colorcode
+#' @param title
+#' @param xlabel
+#' @param ylabel
+#' @export
 
 scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, title,
     xlabel, ylabel) {
@@ -95,25 +140,3 @@ scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, ti
     # abline(a=0, b=20,lty=2,col='gray60') abline(a=0,
     # b=0.05,lty=2,col='gray60')
 }
-
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2

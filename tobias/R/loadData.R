@@ -1,9 +1,17 @@
-#!/usr/bin/Rscript
 
-#---------------------------------------------------------------
-# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data) Author: Snehit
-# Prabhu <snehit@stanford.edu>
-#---------------------------------------------------------------
+#' readData
+#'
+#'@description
+#'
+#' @param dataset
+#' @param feature1
+#' @param feature2
+#' @param colorByClass
+#' @param colorcode
+#' @param title
+#' @param xlabel
+#' @param ylabel
+#' @export
 
 readData <- function(path) {
     #'/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab'
@@ -36,27 +44,6 @@ readData <- function(path) {
     # confirm no 0 entries
     xtabs(~CLNSIG, data = clinvar)
 
-    return(clinvar)
+    clinvar
 }
 
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2

@@ -11,18 +11,48 @@ library(gridExtra)
 library(grid)
 library(gtable)
 
+#' ratio.func
+#'
+#'@description
+#'
+#' @param x
+
+
 ratio.func = function(x){
   x/10
 }
+
+#' diff.func
+#'
+#'@description
+#'
+#' @param x
 
 diff.func = function(x) {
   x+0.01
 }
 
+#' cutoff.func
+#'
+#'@description
+#'
+#' @param x
+#' @export
+
 cutoff.func = function(x) {
   0.01
 }
 
+#' scatterGrob
+#'
+#'@description
+#'
+#' @param dataset
+#' @param pop1
+#' @param pop2
+#' @param min1
+#' @param min2
+#' @export
 
 scatterGrob <- function(dataset, pop1, pop2, min1, min2) {
   partitions = data.frame(xvar = c(1:10 %o% 10^(-7:-1))) #seq(min1, 0.0499, 0.001))
@@ -36,8 +66,19 @@ scatterGrob <- function(dataset, pop1, pop2, min1, min2) {
     scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x)), limits=c(min2,1.2)) +
     theme_bw() + theme(legend.position = "none") # order matter here. theme_bw() at the end overrides hide-legend setting
 
-  return(scatter)
+  scatter
 }
+
+
+#' histGrob
+#'
+#'@description
+#'
+#' @param dataset
+#' @param pop1
+#' @param pop2
+#' @param min1
+#' @export
 
 histGrob <- function(dataset, pop1, pop2, min1) {
   histOfVariants <- ggplot(data=dataset) +
@@ -49,6 +90,13 @@ histGrob <- function(dataset, pop1, pop2, min1) {
   return(histOfVariants)
 }
 
+#' getCounts
+#'
+#'@description
+#'
+#' @param dataset
+#' @export
+
 getCounts <- function(dataset) {
   enrichmentTable <- matrix(nrow=1, ncol=3)
   enrichmentTable[1,1] = nrow(dataset[which(dataset[, "ACMG"]=="B or LB"),])
@@ -56,6 +104,19 @@ getCounts <- function(dataset) {
   enrichmentTable[1,3] = nrow(dataset[which(dataset[, "ACMG"]=="P or LP"),])
   return(enrichmentTable)
 }
+
+#' testEnrichment
+#'
+#'@description
+#'
+#' @param dataset
+#' @param pop1
+#' @param pop2
+#' @param colorcode
+#' @param title
+#' @param xlabel
+#' @param ylabel
+#' @export
 
 testEnrichment <- function(dataset, pop1, pop2, colorcode, title, xlabel, ylabel) {
 
@@ -102,4 +163,3 @@ testEnrichment <- function(dataset, pop1, pop2, colorcode, title, xlabel, ylabel
   grid.draw(all)
 
 }
-

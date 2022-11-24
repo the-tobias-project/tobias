@@ -1,18 +1,13 @@
-#!/usr/bin/Rscript
 
-#---------------------------------------------------------------
-# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data) Author: Snehit
-# Prabhu <snehit@stanford.edu> Contributor: Arturo Lopez Pineda
-# <arturolp@stanford.edu>
-#---------------------------------------------------------------
+#' fit_global_pop
+#'
+#'@description
+#' contains logic to FIT the regression models
+#' @param clinvar
+#' @param mypops
+#' @export
 
-
-#--------
-# A. contains logic to FIT the regression models
-
-# Part 1. Create model
 fit_global_pop <- function(clinvar, mypops) {
-    # Train the model
     if (is.null(mypops)) {
         model <- multinom(ACMG ~ af_adj, data = clinvar, trace = FALSE)
     } else {
@@ -21,13 +16,16 @@ fit_global_pop <- function(clinvar, mypops) {
         fmla <- as.formula(paste("ACMG ~ af_adj +", pops.formula))
         model <- multinom(fmla, data = clinvar, trace = FALSE)
     }
-    return(model)
+    model
 }
 
-#--------
-# B. Contains logic to PLOT the regression models
+#' plotGlobalEffects
+#'
+#'@description
+#' Contains logic to PLOT the regression models. Plot for Global Effects
+#' @param test_global_f
+#' @export
 
-# 1. Plot for Global Effects
 plotGlobalEffects <- function(test_global_f) {
     adj_fs <- data.frame(af_adj = c(0:100)/100)  # Lines between 0 and 1
     test_global_eff <- Effect("af_adj", test_global_f, xlevels = adj_fs)
@@ -37,7 +35,16 @@ plotGlobalEffects <- function(test_global_f) {
 }
 
 
-# 2. Plot for Global + Population Effects
+#' plotPopEffects
+#'
+#'@description
+#' Contains logic to PLOT the regression models. Plot for Global + Population Effects
+#' @param mypops
+#' @param popLabel
+#' @param popColor
+#' @param model
+#' @export
+
 plotPopEffects <- function(mypops, popLabel, popColor, model) {
 
 
@@ -61,8 +68,16 @@ plotPopEffects <- function(mypops, popLabel, popColor, model) {
     }
 }
 
+#' plotAncestryEffects
+#'
+#'@description
+#' Contains logic to PLOT the regression models. Plot for Global + Ancestry Effects
+#' @param mypops
+#' @param popLabel
+#' @param popColor
+#' @param model
+#' @export
 
-# 3. Plot for Global + Ancestry Effects
 plotAncestryEffects <- function(mypops, popLabel, popColor, model) {
     pop_diffs <- data.frame(pop_adj = 2 * c(-50:50)/100)
     d_pop <- paste("d", mypops, sep = "_")
@@ -74,30 +89,54 @@ plotAncestryEffects <- function(mypops, popLabel, popColor, model) {
             points = 20)))
 }
 
-#--------
-# C. Contains logic to TEST the regression models (permutation tests,
-# statistical significance, prediction power, etc.)
 
-# 1. Z-score
+#' getZscore
+#'
+#'@description
+#' Contains logic to TEST the regression models (permutation tests, statistical significance, prediction power, etc.)
+#' @param model
+#' @export
+
 getZscore <- function(model) {
     ztable = summary(model)$coefficients/summary(model)$standard.errors
-    return(ztable)
+    ztable
 }
 
-# 2. P-value (from z-score)
+#' getPvalue
+#'
+#'@description
+#' P-value (from z-score)
+#' @param zscore
+#' @export
+
 getPvalue <- function(zscore) {
     p_value <- (1 - pnorm(abs(zscore), 0, 1)) * 2
-    return(p_value)
+    p_value
 }
 
-# 3. Hard missclassification error
+#' getHardError
+#'
+#'@description
+#' Hard missclassification error
+#' @param model
+#' @param clinvar
+#' @export
+
 getHardError <- function(model, clinvar) {
     fitted_model <- predict(model, newdata = clinvar, type = "class", se = TRUE)
     hardError <- mean(fitted_model != clinvar$ACMG)
-    return(hardError)
+    hardError
 }
 
-# 4. Soft missclassification error
+
+#' getSoftError
+#'
+#'@description
+#' Soft missclassification error
+#' @param model
+#' @param clinvar
+#' @export
+
 getSoftError <- function(model, clinvar) {
     softError = c(0, 0)
     real_class <- model.matrix(~0 + ACMG, clinvar)
@@ -110,10 +149,19 @@ getSoftError <- function(model, clinvar) {
     # Soft Error
     softError[2] <- sum((1 - real_class) * fitted_model)/total  #average misclassification per variant if you use AF diff encoding
 
-    return(softError)
+    softError
 }
 
-# 5. Cross validation
+
+#' calculateCrossValidation
+#'
+#'@description
+#' Cross validation
+#' @param percentage
+#' @param pops
+#' @param clinvar
+#' @export
+
 calculateCrossValidation <- function(percentage, pops, clinvar) {
     require(caret)
     set.seed(3456)
@@ -141,12 +189,20 @@ calculateCrossValidation <- function(percentage, pops, clinvar) {
 
     accuracy = accuracy/reps
 
-    return(accuracy)
+    accuracy
 
 }
 
+#' calculatePermutationTesting
+#'
+#'@description
+#' Permutation testing for significance of predictor
+#' @param baseline.pops
+#' @param model.pops
+#' @param numberOfPermutations
+#' @param clinvar
+#' @export
 
-# 6. Permutation testing for significance of predictor
 calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermutations,
     clinvar) {
 
@@ -179,16 +235,7 @@ calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermu
         }
     }
 
-    return(randomModelMoreSignificant/numberOfPermutations)
+    randomModelMoreSignificant/numberOfPermutations
 
 
 }
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2
-FALSE
-FALSE
-2

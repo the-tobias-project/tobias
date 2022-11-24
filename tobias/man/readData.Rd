@@ -2,10 +2,10 @@
 % Please edit documentation in R/loadData.R
 \name{readData}
 \alias{readData}
-\title{/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab'}
+\title{readData}
 \usage{
 readData(path)
 }
 \description{
-/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab'
+readData
 }

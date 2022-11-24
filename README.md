@@ -21,4 +21,4 @@ Tobias was conceived and developed thanks to support from
 
 
 #### Installation:
-Install first direnv. Then run: make install
+Install "direnv" first. Then run "make install" within this folder.

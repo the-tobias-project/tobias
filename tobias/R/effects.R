@@ -5,6 +5,7 @@
 #' contains logic to FIT the regression models
 #' @param clinvar
 #' @param mypops
+#' @importFrom nnet multinom
 #' @export
 
 fit_global_pop <- function(clinvar, mypops) {
@@ -12,21 +13,22 @@ fit_global_pop <- function(clinvar, mypops) {
         model <- multinom(ACMG ~ af_adj, data = clinvar, trace = FALSE)
     } else {
         xnam <- paste("d", mypops, sep = "_")
-        pops.formula <- paste(xnam, collapse = "+")
-        fmla <- as.formula(paste("ACMG ~ af_adj +", pops.formula))
+        pops_formula <- paste(xnam, collapse = "+")
+        fmla <- as.formula(paste("ACMG ~ af_adj +", pops_formula))
         model <- multinom(fmla, data = clinvar, trace = FALSE)
     }
     model
 }
 
-#' plotGlobalEffects
+#' plot_global_effects
 #'
 #'@description
 #' Contains logic to PLOT the regression models. Plot for Global Effects
 #' @param test_global_f
+#' @importFrom effects Effect
 #' @export
 
-plotGlobalEffects <- function(test_global_f) {
+plot_global_effects <- function(test_global_f) {
     adj_fs <- data.frame(af_adj = c(0:100)/100)  # Lines between 0 and 1
     test_global_eff <- Effect("af_adj", test_global_f, xlevels = adj_fs)
     plot(test_global_eff, xlim = c(0, 1), ylim = c(0, 1), rug = FALSE, xlab = "AF(global)",
@@ -35,7 +37,7 @@ plotGlobalEffects <- function(test_global_f) {
 }
 
 
-#' plotPopEffects
+#' plot_pop_effects
 #'
 #'@description
 #' Contains logic to PLOT the regression models. Plot for Global + Population Effects
@@ -43,16 +45,17 @@ plotGlobalEffects <- function(test_global_f) {
 #' @param popLabel
 #' @param popColor
 #' @param model
+#' @importFrom effects Effect
 #' @export
 
-plotPopEffects <- function(mypops, popLabel, popColor, model) {
+plot_pop_effects <- function(mypops, popLabel, popColor, model) {
 
 
     if (is.null(mypops)) {
         adj_fs <- data.frame(af_adj = c(0:100)/100)  # Lines between 0 and 1
         test_model <- Effect("af_adj", model, xlevels = adj_fs)
-        myXLab = "AF(global)"
-        mainLabel = "Global AFs"
+        myXLab <- "AF(global)"
+        mainLabel <- "Global AFs"
         plot(test_model, xlim = c(0, 1), ylim = c(0, 1), rug = FALSE, color = popColor,
             xlab = myXLab, ylab = "Probability", main = mainLabel, par.settings = list(fontsize = list(text = 20,
                 points = 20)))
@@ -60,15 +63,15 @@ plotPopEffects <- function(mypops, popLabel, popColor, model) {
         adj_fs <- data.frame(af_adj = 2 * c(-50:50)/100)  # Lines between -1 and 1
         d_pop <- paste("d", mypops, sep = "_")
         test_model <- Effect(d_pop, model, xlevels = adj_fs)
-        myXLab = paste("AF(global) - AF(", paste(mypops, collapse = "+"), ")", sep = "")
-        mainLabel = paste("Global + ", popLabel, sep = "")
+        myXLab <- paste("AF(global) - AF(", paste(mypops, collapse = "+"), ")", sep = "")
+        mainLabel <- paste("Global + ", popLabel, sep = "")
         plot(test_model, xlim = c(-1, 1), ylim = c(0, 1), rug = FALSE, color = popColor,
             xlab = myXLab, ylab = "Probability", main = mainLabel, par.settings = list(fontsize = list(text = 20,
                 points = 20)))
     }
 }
 
-#' plotAncestryEffects
+#' plot_ancestry_effects
 #'
 #'@description
 #' Contains logic to PLOT the regression models. Plot for Global + Ancestry Effects
@@ -76,45 +79,46 @@ plotPopEffects <- function(mypops, popLabel, popColor, model) {
 #' @param popLabel
 #' @param popColor
 #' @param model
+#' @importFrom effects Effect
 #' @export
 
-plotAncestryEffects <- function(mypops, popLabel, popColor, model) {
+plot_ancestry_effects <- function(mypops, popLabel, popColor, model) {
     pop_diffs <- data.frame(pop_adj = 2 * c(-50:50)/100)
     d_pop <- paste("d", mypops, sep = "_")
     test_pop_eff <- Effect(d_pop, model, xlevels = pop_diffs)
-    myXLab = paste("AF(global) - AF(", popLabel, ")", sep = "")
-    mainLabel = paste("Global + ", popLabel, sep = "")
+    myXLab <- paste("AF(global) - AF(", popLabel, ")", sep = "")
+    mainLabel <- paste("Global + ", popLabel, sep = "")
     plot(test_pop_eff, xlim = c(-1, 1), ylim = c(0, 1), rug = FALSE, color = popColor,
         xlab = myXLab, ylab = "Probability", main = mainLabel, par.settings = list(fontsize = list(text = 20,
             points = 20)))
 }
 
 
-#' getZscore
+#' get_z_score
 #'
 #'@description
 #' Contains logic to TEST the regression models (permutation tests, statistical significance, prediction power, etc.)
 #' @param model
 #' @export
 
-getZscore <- function(model) {
-    ztable = summary(model)$coefficients/summary(model)$standard.errors
+get_z_score <- function(model) {
+    ztable <- summary(model)$coefficients/summary(model)$standard.errors
     ztable
 }
 
-#' getPvalue
+#' get_p_value
 #'
 #'@description
 #' P-value (from z-score)
 #' @param zscore
 #' @export
 
-getPvalue <- function(zscore) {
+get_p_value <- function(zscore) {
     p_value <- (1 - pnorm(abs(zscore), 0, 1)) * 2
     p_value
 }
 
-#' getHardError
+#' get_hard_error
 #'
 #'@description
 #' Hard missclassification error
@@ -122,14 +126,14 @@ getPvalue <- function(zscore) {
 #' @param clinvar
 #' @export
 
-getHardError <- function(model, clinvar) {
+get_hard_error <- function(model, clinvar) {
     fitted_model <- predict(model, newdata = clinvar, type = "class", se = TRUE)
     hardError <- mean(fitted_model != clinvar$ACMG)
     hardError
 }
 
 
-#' getSoftError
+#' get_soft_error
 #'
 #'@description
 #' Soft missclassification error
@@ -137,8 +141,8 @@ getHardError <- function(model, clinvar) {
 #' @param clinvar
 #' @export
 
-getSoftError <- function(model, clinvar) {
-    softError = c(0, 0)
+get_soft_error <- function(model, clinvar) {
+    softError <- c(0, 0)
     real_class <- model.matrix(~0 + ACMG, clinvar)
     fitted_model <- predict(model, newdata = clinvar, type = "probs", se = TRUE)
     total <- sum(summary(clinvar$ACMG))
@@ -153,47 +157,47 @@ getSoftError <- function(model, clinvar) {
 }
 
 
-#' calculateCrossValidation
+#' calculate_cross_validation
 #'
 #'@description
 #' Cross validation
 #' @param percentage
 #' @param pops
 #' @param clinvar
+#' @importFrom caret createDataPartition
 #' @export
 
-calculateCrossValidation <- function(percentage, pops, clinvar) {
-    require(caret)
+calculate_cross_validation <- function(percentage, pops, clinvar) {
     set.seed(3456)
 
     accuracy = 0
     reps = 10
     percentage = percentage/100  #to transform from 10% to 0.1
 
-    for (run in 1:reps) {
+    for (run in seq_len(reps)) {
         # First, select the partitions
         trainIndex <- createDataPartition(clinvar$CLNSIG, p = percentage, list = FALSE,
             times = 1)
 
         # Train the model
-        model = fit_global_pop(clinvar[trainIndex, ], pops)
+        model <- fit_global_pop(clinvar[trainIndex, ], pops)
 
         # The test
         fitted_model <- predict(model, newdata = clinvar[-trainIndex, ], type = "class",
             se = TRUE)
         misClasificError <- mean(fitted_model != clinvar[-trainIndex, ]$ACMG)
 
-        accuracy = accuracy + misClasificError
+        accuracy <- accuracy + misClasificError
 
     }
 
-    accuracy = accuracy/reps
+    accuracy <- accuracy/reps
 
     accuracy
 
 }
 
-#' calculatePermutationTesting
+#' calculate_permutation_testing
 #'
 #'@description
 #' Permutation testing for significance of predictor
@@ -203,19 +207,19 @@ calculateCrossValidation <- function(percentage, pops, clinvar) {
 #' @param clinvar
 #' @export
 
-calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermutations,
+calculate_permutation_testing <- function(baseline.pops, model.pops, numberOfPermutations,
     clinvar) {
 
-    randomModelMoreSignificant = 0
+    randomModelMoreSignificant <- 0
 
     # 0. Calculate the model proportions Train the baseline
-    baseline = fit_global_pop(clinvar, baseline.pops)
-    softError = getSoftError(model, clinvar)
-    softError_apriori = softError[1]
-    softError_model = softError[2]
+    baseline <- fit_global_pop(clinvar, baseline.pops)
+    softError <- get_soft_error(baseline, clinvar)
+    softError_apriori <- softError[1]
+    softError_model <- softError[2]
 
 
-    for (run in 1:numberOfPermutations) {
+    for (run in seq_len(numberOfPermutations)) {
         clinvar_new <- clinvar
 
         # 1. Shuffle the ACMG labels
@@ -225,9 +229,9 @@ calculatePermutationTesting <- function(baseline.pops, model.pops, numberOfPermu
 
         # 2. Train a new multinomial model based on a shuffled dataset
         model <- fit_global_pop(clinvar_new, model.pops)
-        softErrorIter = getSoftError(model, clinvar)
-        softErrorIter_apriori = softErrorIter[1]
-        softErrorIter_model = softErrorIter[2]
+        softErrorIter <- get_soft_error(model, clinvar)
+        softErrorIter_apriori <- softErrorIter[1]
+        softErrorIter_model <- softErrorIter[2]
 
         # 3. Count if it is more extreme than the original data
         if (softError_apriori - softError_model < softErrorIter_apriori - softErrorIter_model) {

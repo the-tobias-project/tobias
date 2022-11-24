@@ -12,7 +12,7 @@ respectively
 ```shell
 module load tabix/0.2.6
 module load samtools/1.3.1
-module loadbcftools/1.3.1
+module load bcftools/1.3.1
 ```
 
 4. Then, after installing samtools:

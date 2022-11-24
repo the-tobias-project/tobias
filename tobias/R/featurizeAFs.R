@@ -1,14 +1,5 @@
 
-library(scales)
-library(foreign)
-library(nnet)
-library(ggplot2)
-library(reshape2)
-library(effects)
-
-
-
-#' setAFs
+#' set_AFs
 #'
 #'@description
 #'
@@ -16,14 +7,14 @@ library(effects)
 #' @param poplabels
 #' @export
 
-setAFs <- function(dataset, poplabels) {
+set_AFs <- function(dataset, poplabels) {
     # c('adj', 'nfe', 'afr', 'amr', 'sas', 'eas', 'fin', 'oth')
     for (pop in poplabels) {
-        assign("allele", paste("ac_", pop, sep = ""))
+        allele <- paste("ac_", pop, sep = "")
         dataset[, allele] <- as.numeric(as.character(dataset[, allele]))
-        assign("total", paste("an_", pop, sep = ""))
+        total <- paste("an_", pop, sep = "")
         dataset[, total] <- as.numeric(as.character(dataset[, total]))
-        assign("freq", paste("af_", pop, sep = ""))
+        freq <- paste("af_", pop, sep = "")
 
         # MODIFIED dataset[,freq] <- clinvar[,allele]/pmax(dataset[,total],1)
         # changed to 'dataset' since 'clinvar' was not previously defined
@@ -33,7 +24,7 @@ setAFs <- function(dataset, poplabels) {
     dataset
 }
 
-#' setResidualAFs
+#' set_residual_AFs
 #'
 #'@description
 #'
@@ -41,20 +32,20 @@ setAFs <- function(dataset, poplabels) {
 #' @param poplabels
 #' @export
 
-setResidualAFs <- function(dataset, poplabels) {
+set_residual_AFs <- function(dataset, poplabels) {
     for (pop in poplabels) {
 
         # Definitions that were never added in the scope of this function ADDED
-        assign("allele", paste("ac_", pop, sep = ""))
+        allele <- paste("ac_", pop, sep = "")
         dataset[, allele] <- as.numeric(as.character(dataset[, allele]))
-        assign("total", paste("an_", pop, sep = ""))
+        total <- paste("an_", pop, sep = "")
         dataset[, total] <- as.numeric(as.character(dataset[, total]))
-        assign("population", paste("af_", pop, sep = ""))
+        population <- paste("af_", pop, sep = "")
         dataset[, population] <- dataset[, allele]/pmax(dataset[, total], 1)
         # End of ADDED
 
 
-        assign("dfreq", paste("d_", pop, sep = ""))
+        dfreq <- paste("d_", pop, sep = "")
         dataset[, dfreq] <- dataset[, population] - dataset[, "af_adj"]
         range(dataset[, dfreq])
         mean(dataset[, dfreq])
@@ -62,7 +53,7 @@ setResidualAFs <- function(dataset, poplabels) {
     dataset
 }
 
-#' histAFs
+#' hist_AFs
 #'
 #'@description
 #'
@@ -74,10 +65,10 @@ setResidualAFs <- function(dataset, poplabels) {
 # for all populations in the API Another will create individual histograms,
 # also used by the UI
 
-histAFs <- function(dataset, poplabels, colorName) {
+hist_AFs <- function(dataset, poplabels, colorName) {
     i = 1
     for (pop in poplabels) {
-        assign("popfreq", paste("af_", pop, sep = ""))
+        popfreq <- paste("af_", pop, sep = "")
         opar = par(ps = 20, font = 7)
         hist(dataset[, popfreq], breaks = 100, cex = 10, main = "", col = colorName,
             xlim = c(0, 1), ylim = c(0, 70000), xlab = paste("AF(", pop, ")", sep = ""),
@@ -86,7 +77,7 @@ histAFs <- function(dataset, poplabels, colorName) {
     }
 }
 
-#' histResidualAFs
+#' hist_residual_AFs
 #'
 #'@description
 #'
@@ -95,9 +86,9 @@ histAFs <- function(dataset, poplabels, colorName) {
 #' @param colorName
 #' @export
 
-histResidualAFs <- function(dataset, poplabels, colorName) {
+hist_residual_AFs <- function(dataset, poplabels, colorName) {
     for (pop in poplabels) {
-        assign("dfreq", paste("d_", pop, sep = ""))
+        dfreq <- paste("d_", pop, sep = "")
         opar = par(ps = 20, font = 7)
         hist(dataset[, dfreq], breaks = 100, cex = 10, main = "", col = colorName,
             xlim = c(-1, 1), ylim = c(0, 70000), xlab = paste("AF(", pop, ") - AF(global)",
@@ -106,7 +97,7 @@ histResidualAFs <- function(dataset, poplabels, colorName) {
     }
 }
 
-#' scatterPlot
+#' scatter_plot
 #'
 #'@description
 #'
@@ -118,9 +109,10 @@ histResidualAFs <- function(dataset, poplabels, colorName) {
 #' @param title
 #' @param xlabel
 #' @param ylabel
+#' @importFrom  scales alpha
 #' @export
 
-scatterPlot <- function(dataset, feature1, feature2, colorByClass, colorcode, title,
+scatter_plot <- function(dataset, feature1, feature2, colorByClass, colorcode, title,
     xlabel, ylabel) {
     # try( if (length(colorcode) != levels(dataset[,colorByClass]))
     # return('colorByClass has different number of levels than colors in

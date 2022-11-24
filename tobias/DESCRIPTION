@@ -10,14 +10,11 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 Imports: 
     caret,
     effects,
-    foreign,
-    ggExtra,
     ggplot2,
     grid,
     gridExtra,
     gtable,
     nnet,
-    reshape2,
     scales
 Suggests: 
     testthat (>= 3.0.0)

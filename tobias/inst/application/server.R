@@ -32,11 +32,11 @@ colnames(pops) <- c("symbol", "label", "color")
 
 
 # Load Data
-clinvar <- readData("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
+clinvar <- read_data("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
 clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
 populations <- as.vector(pops$symbol)
-dataset <- setAFs(clinvar, c("adj", populations))
-dataset <- setResidualAFs(dataset, c("adj", populations))
+dataset <- set_AFs(clinvar, c("adj", populations))
+dataset <- set_residual_AFs(dataset, c("adj", populations))
 
 
 # Support Functions
@@ -65,13 +65,13 @@ shinyServer(function(input, output) {
   # 1A. Histogram Population Allele Frequency
   #---------------------------
   output$histogramPAF <- renderPlot({
-    histAFs(dataset, input$pop_explore, getColor(input$pop_explore))
+    hist_AFs(dataset, input$pop_explore, getColor(input$pop_explore))
   })
 
   # 1B. Histogram Global Allele Frequency
   #---------------------------
   output$histogramGAF <- renderPlot({
-    histResidualAFs(dataset, input$pop_explore, getColor(input$pop_explore))
+    hist_residual_AFs(dataset, input$pop_explore, getColor(input$pop_explore))
   })
 
   # 2. Scatter Plot
@@ -79,11 +79,11 @@ shinyServer(function(input, output) {
   output$scatterAF <- renderPlot({
 
     af_label <- paste("af_", input$pop_explore, sep="")
-    colorcode<-c("blue","lightgreen","red")
+    colorcode <- c("blue","lightgreen","red")
     title_label <- paste("All vs. ", getLabel(input$pop_explore), sep = "")
     y_label <- paste("AF(", getLabel(input$pop_explore) ,")", sep="")
 
-    scatterPlot(dataset, "af_adj", af_label, "ACMG", colorcode, title_label, "AF(global)", y_label)
+    scatter_plot(dataset, "af_adj", af_label, "ACMG", colorcode, title_label, "AF(global)", y_label)
 
   })
 
@@ -93,11 +93,11 @@ shinyServer(function(input, output) {
   output$enrichment <- renderPlot({
 
     af_label <- paste("af_", input$pop_test, sep="")
-    colorcode<-c("blue","lightgreen","red")
+    colorcode <- c("blue","lightgreen","red")
     title_label <- paste("All vs. ", getLabel(input$pop_test), sep = "")
     y_label <- paste("AF(", getLabel(input$pop_test) ,")", sep="")
 
-    testEnrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
+    test_enrichment(dataset, "af_adj", af_label, colorcode, title_label, "AF(global)", y_label)
 
   })
 
@@ -119,7 +119,7 @@ shinyServer(function(input, output) {
     model <- model.multi.baseline()
     multiLabel = paste(getLabel(mypops), collapse=" + ")
     myColors = getColor(mypops)[1]
-    plotPopEffects(mypops, multiLabel, myColors, model)
+    plot_pop_effects(mypops, multiLabel, myColors, model)
   })
 
   output$effectsModel <- renderPlot({
@@ -127,13 +127,13 @@ shinyServer(function(input, output) {
     model <- model.multi.model()
     multiLabel = paste(getLabel(mypops), collapse=" + ")
     myColors = getColor(mypops)[1]
-    plotPopEffects(mypops, multiLabel, myColors, model)
+    plot_pop_effects(mypops, multiLabel, myColors, model)
   })
 
   output$labelBaseline <- renderUI({
     model <- model.multi.baseline()
-    hardError = getHardError(model, dataset)
-    softError = getSoftError(model, dataset)
+    hardError = get_hard_error(model, dataset)
+    softError = get_soft_error(model, dataset)
     hard <-  paste("Classification error (hard) = ", format(hardError, digits=3))
     soft <- paste("Classification error (soft) = ", format(softError[2], digits=3))
     baseline <- paste("Classification error (a priori) = ", format(softError[1], digits=3))
@@ -143,8 +143,8 @@ shinyServer(function(input, output) {
 
   output$labelModel <- renderUI({
     model <- model.multi.model()
-    hardError = getHardError(model, dataset)
-    softError = getSoftError(model, dataset)
+    hardError = get_hard_error(model, dataset)
+    softError = get_soft_error(model, dataset)
     hard <-  paste("Classification error (hard) = ", format(hardError, digits=3))
     soft <- paste("Classification error (soft) = ", format(softError[2], digits=3))
     baseline <- paste("Classification error (a priori) = ", format(softError[1], digits=3))
@@ -156,7 +156,7 @@ shinyServer(function(input, output) {
   #-----
   calculateCVbaseline <- eventReactive(input$cvButtonBaseline, {
     mypops = input$pop_predict_baseline
-    accuracy = calculateCrossValidation(input$cvInputBaseline, mypops, dataset)*100
+    accuracy = calculate_cross_validation(input$cvInputBaseline, mypops, dataset)*100
     paste("Misclassification Error = ", format(accuracy, digits=3), " %", sep="")
   })
 
@@ -166,7 +166,7 @@ shinyServer(function(input, output) {
 
   calculateCVmodel <- eventReactive(input$cvButtonModel, {
     mypops = input$pop_predict_model
-    accuracy = calculateCrossValidation(input$cvInputModel, mypops, dataset)*100
+    accuracy = calculate_cross_validation(input$cvInputModel, mypops, dataset)*100
     paste("Misclassification Error = ", format(accuracy, digits=3), " %", sep="")
   })
 
@@ -181,7 +181,7 @@ shinyServer(function(input, output) {
     baseline = input$pop_predict_baseline
     model = input$pop_predict_model
     numberOfPermutations = input$sliderPT
-    pvalue = calculatePermutationTesting(baseline, model, numberOfPermutations, dataset)
+    pvalue = calculate_permutation_testing(baseline, model, numberOfPermutations, dataset)
     paste("P-Value = ", format(pvalue, digits=3), sep="")
   })
 

@@ -1,19 +1,12 @@
 
-#' readData
+#' read_data
 #'
 #'@description
 #'
-#' @param dataset
-#' @param feature1
-#' @param feature2
-#' @param colorByClass
-#' @param colorcode
-#' @param title
-#' @param xlabel
-#' @param ylabel
+#' @param path
 #' @export
 
-readData <- function(path) {
+read_data <- function(path) {
     #'/Users/snehit/dev/ancestrybias/clinvar.exac.variants.gene.submission.diseases.alleles.tab'
     clinvar <- read.delim(path, sep = "\t", header = TRUE)
     dim(clinvar)

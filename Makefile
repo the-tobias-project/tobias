@@ -38,7 +38,7 @@ static: activate
 
 
 format: activate
-	R --vanilla -e "formatR::tidy_dir('${REPO}/R', recursive = TRUE, keep.comment = FALSE, keep.blank.line = FALSE, reindent.spaces = 2)"
+	R --vanilla -e "formatR::tidy_dir('${REPO}/R', recursive = TRUE, keep.comment = TRUE, keep.blank.line = FALSE, reindent.spaces = 2)"
 
 
 prepare: document format check static 

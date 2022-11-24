@@ -1,10 +1,10 @@
 
-require(scales)
-require(foreign)
-require(nnet)
-require(ggplot2)
-require(reshape2)
-require(effects)
+library(scales)
+library(foreign)
+library(nnet)
+library(ggplot2)
+library(reshape2)
+library(effects)
 
 
 

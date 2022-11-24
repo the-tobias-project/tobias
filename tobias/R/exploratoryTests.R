@@ -1,9 +1,3 @@
-#!/usr/bin/Rscript
-
-#---------------------------------------------------------------
-# Project: Ancestry Bias in ClinVar (w.r.t ExAC population data)
-# Author: Snehit Prabhu <snehit@stanford.edu>
-#---------------------------------------------------------------
 
 library(ggplot2)
 library(ggExtra)

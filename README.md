@@ -18,3 +18,7 @@ Please direct comments to snehit atty stanford dotty edu
 Tobias was conceived and developed thanks to support from  
 1. The UCSF/Stanford CERSI grant, awarded by the FDA (U01 FD004979)
 2. The Stanford/Baylor Clinical Genome Resource grant, awarded by the NHGRI (U01 HG007436-04)
+
+
+#### Installation:
+Install first direnv. Then run: make install

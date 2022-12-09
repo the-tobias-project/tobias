@@ -30,7 +30,7 @@ pip install pyenv virtualenv-pyenv
 
 pyenv install 3.10.6
 pyenv virtualenv 3.10.6 tobias
-pyenvl local tobias
+pyenv local tobias
 ```
 
 -  Set linux environment, distribution dependent (example for Archlinux here)

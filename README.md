@@ -54,7 +54,7 @@ databricks-connect configure # use the url of databricks workspace to extract th
 
 databricks host: https://adb-587466035000722.2.azuredatabricks.net/
 
-Databricks Token: <GENERATE A PERSONAL ACCESS TOKER HERE IN DATABRICKS SETTINGS>
+Databricks Token: GENERATE A PERSONAL ACCESS TOKER HERE IN DATABRICKS SETTINGS
 
 Cluster ID: 1025-235731-iplxjnlf
 

@@ -4,3 +4,8 @@
   assign("sc", sc, envir = .GlobalEnv)
   packageStartupMessage("Spark loaded!")
 }
+
+.onDetach <- function(libpath) {
+  sparklyr::spark_disconnect_all()
+  packageStartupMessage("Spark disconnected!")
+}

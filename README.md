@@ -52,6 +52,8 @@ pip install databricks-connect
 databricks-connect configure # use the url of databricks workspace to extract the following elements:
 ```
 
+```console
+{
 databricks host: https://adb-587466035000722.2.azuredatabricks.net/
 
 Databricks Token: GENERATE A PERSONAL ACCESS TOKER HERE IN DATABRICKS SETTINGS
@@ -61,6 +63,8 @@ Cluster ID: 1025-235731-iplxjnlf
 Org ID: 587466035000722
 
 PORT: 15001
+}
+```
 
 - In .Renviron, set SPARK_HOME, eg:
 ```console

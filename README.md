@@ -14,9 +14,13 @@ Tobias was conceived and developed thanks to support from
 2. The Stanford/Baylor Clinical Genome Resource grant, awarded by the NHGRI (U01 HG007436-04)
 
 
-#### Installation (for development):
-Install "direnv" first. Then run "make install" within this folder.
+#### Installation (for development)
+Install "direnv" first. Then run "make install" within this folder. For example using Archlinux:
 
+```console
+sudo pacman -S direnv
+make install
+```
 
 #### Connection to Databricks:
 This are the commands I run locally in the tobias folder. I am using archlinux, so this should be changed

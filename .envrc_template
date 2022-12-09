@@ -1,0 +1,7 @@
+export REPO=tobias
+export SPARK_HOME=$(databricks-connect get-spark-home)
+export databricks_host=
+export databricks_token=
+export databricks_cluster_id=
+export databricks_org_id=
+export databricks_port=

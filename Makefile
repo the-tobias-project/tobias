@@ -38,7 +38,13 @@ clean:
 	rm -rf ${REPO}*.tar.gz
 
 
-install: init clean
+configure:
+	echo '{"host": "${databricks_host}", "token":"${databricks_token}", "cluster_id":"${databricks_cluster_id}", "org_id":"${databricks_org_id}", "port":"${databricks_port}"}' | jq . > ~/.databricks-connect 
+	databricks-connect test
+	
+
+install: init clean configure
 	cd ${REPO} && \
 	R --vanilla --slave -e "devtools::build()" && \
 	cd .. & R --vanilla -e "devtools::install('${REPO}', dependencies = TRUE)"
+

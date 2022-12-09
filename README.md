@@ -14,68 +14,47 @@ Tobias was conceived and developed thanks to support from
 2. The Stanford/Baylor Clinical Genome Resource grant, awarded by the NHGRI (U01 HG007436-04)
 
 
-#### Installation (for development)
-Install "direnv" first. Then run "make install" within this folder. For example using Archlinux:
+#### Installation
+Install "direnv" first. Then run the following commands:
 
 ```console
-sudo pacman -S direnv
-make install
-```
+apt-get install direnv
 
-#### Connection to Databricks:
-This are the commands I run locally in the tobias folder. I am using archlinux, so this should be changed
-for other distributions (eg, Ubuntu)
-
-
--  install pyenv and virtualenv-pyenv
-
-```console
-pip install pyenv virtualenv-pyenv
-
+pip install pyenv virtualenv-pyenv databricks-connect
 pyenv install 3.10.6
 pyenv virtualenv 3.10.6 tobias
 pyenv local tobias
+
+pip uninstall pyspark
+
+make install
 ```
 
--  Set linux environment, distribution dependent (example for Archlinux here)
+Check that the java version is java-8! Otherwise databricks-connect does not work
 
-```console
-unset SPARK_HOME
-sudo pacman -S jdk8-openjdk
-sudo pacman -S jre8-openjdk
-sudo archlinux-java set java-8-openjdk # set java8 as default java, with other versions didn't work
-```
 
-Just set as default java 8 in Ubuntu and you are good to go
+Go to databricks > compute and select your cluster, you can see an url like this one:
 
-- Configure python environment
+https://DATABRICKS_HOST/login.html?o=ORGANIZATION#setting/clusters/CLUSTER_ID/configuration
 
-```console
-pip uninstall pyspark # be sure that pyspark is not in the current environment
-pip install databricks-connect
-databricks-connect configure 
-```
-
-Use the url of databricks workspace to extract the following elements:
+Extract the following fields
 
 ```console
 {
-databricks host: https://adb-587466035000722.2.azuredatabricks.net/
+databricks host: DATABRICKS_HOST
 
 Databricks Token: GENERATE A PERSONAL ACCESS TOKER HERE IN DATABRICKS SETTINGS
 
-Cluster ID: 1025-235731-iplxjnlf
+Cluster ID: CLUSTER_ID
 
-Org ID: 587466035000722
+Org ID: ORGANIZATION
 
 PORT: 15001
 }
 ```
 
-- In .Renviron, set SPARK_HOME, eg:
-```console
-SPARK_HOME=/home/leandro/.pyenv/versions/tobias/lib/python3.10/site-packages/pyspark
-```
+Then copy .envrc_template to .envrc and set the corresponding values in .envrc
+
 
 
 

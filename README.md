@@ -49,8 +49,10 @@ Just set as default java 8 in Ubuntu and you are good to go
 ```console
 pip uninstall pyspark # be sure that pyspark is not in the current environment
 pip install databricks-connect
-databricks-connect configure # use the url of databricks workspace to extract the following elements:
+databricks-connect configure 
 ```
+
+Use the url of databricks workspace to extract the following elements:
 
 ```console
 {

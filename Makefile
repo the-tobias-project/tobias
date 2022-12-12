@@ -43,8 +43,11 @@ configure:
 	databricks-connect test
 	
 
-install: init clean configure
+install_package: init
 	cd ${REPO} && \
 	R --vanilla --slave -e "devtools::build()" && \
 	cd .. & R --vanilla -e "devtools::install('${REPO}', dependencies = TRUE)"
+
+
+install: init configure install_package clean
 

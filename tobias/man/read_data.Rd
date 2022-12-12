@@ -4,7 +4,7 @@
 \alias{read_data}
 \title{read_data}
 \usage{
-read_data(path)
+read_data(path, version = "latest")
 }
 \description{
 read_data

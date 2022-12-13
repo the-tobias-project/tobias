@@ -1,11 +1,16 @@
+library(DBI)
+library(odbc)
 
 .onAttach <- function(libname, pkgname, spark_home) {
-  sc <- sparklyr::spark_connect(method="databricks", spark_home=Sys.getenv("SPARK_HOME"))
-  assign("sc", sc, envir = .GlobalEnv)
-  packageStartupMessage("Spark loaded!")
+  con <- DBI::dbConnect(odbc::odbc(),
+                   dsn = "<data_source_name>",
+                   UID = "<userID>",
+                   PWD = "<password>")
+  assign("con", con, envir = .GlobalEnv)
+  packageStartupMessage("Databricks connected!")
 }
 
 .onDetach <- function(libpath) {
-  sparklyr::spark_disconnect_all()
-  packageStartupMessage("Spark disconnected!")
+  DBI::dbDisconnect(con)
+  packageStartupMessage("Databricks disconnected!")
 }

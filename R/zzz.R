@@ -1,7 +1,7 @@
 
 
 .onAttach <- function(libname, pkgname, spark_home) {
-  con <- DBI::dbConnect(odbc::odbc(), "Databricks-Spark")
+  con <- DBI::dbConnect(odbc::odbc(), "Databricks")
   assign("con", con, envir = .GlobalEnv)
   packageStartupMessage("Databricks connected!")
 }

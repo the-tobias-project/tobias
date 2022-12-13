@@ -12,7 +12,7 @@ read_data <- function(path, version = "latest") {
 
     print("Connecting to database...")
     print("Reading data...")
-    clinvar <- dplyr::tbl(dbplyr::in_schema("tobias", "original_table"))
+    clinvar <- dplyr::tbl(con, dbplyr::in_schema("tobias", "original_table"))
     #clinvar <- sparklyr::spark_read_table(sc, "original_table")
     print("Transforming data...")
     #clinvar <- dplyr::select(clinvar, -c(hash, latest))

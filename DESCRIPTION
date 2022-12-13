@@ -21,7 +21,8 @@ Imports:
     shiny,
     sparklyr,
     odbc,
-    DBI
+    DBI,
+    shinydashboard
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

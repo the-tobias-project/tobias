@@ -1,5 +1,4 @@
-library(DBI)
-library(odbc)
+
 
 .onAttach <- function(libname, pkgname, spark_home) {
   con <- DBI::dbConnect(odbc::odbc(),

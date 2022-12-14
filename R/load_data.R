@@ -8,6 +8,8 @@
 
 # TODO: ADD VERSIONING HERE DEPENDING ON USER INPUT
 
+library(magrittr)
+
 read_data <- function(path, version = "latest") {
 
     print("Connecting to database...")
@@ -18,10 +20,10 @@ read_data <- function(path, version = "latest") {
     #clinvar <- dplyr::select(clinvar, -c(hash, latest))
     #clinvar <- sparklyr::collect(clinvar)
     head(clinvar) # remove for final version
-    #clinvar <- as.data.frame(clinvar)
-    #clinvar$CLNSIG <- factor(clinvar$CLNSIG)
+    clinvar <- as.data.frame(clinvar)
+    clinvar$CLNSIG <- factor(clinvar$CLNSIG)
     #clinvar
-    clinvar <- clinvar %>% dplyr::mutate(CLNSIG=as.factor(CLNSIG))
+    #clinvar <- clinvar %>% dplyr::mutate(CLNSIG=as.factor(CLNSIG))
     clinvar
 }
 

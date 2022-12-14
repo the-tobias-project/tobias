@@ -21,6 +21,7 @@ read_data <- function(path, version = "latest") {
     #clinvar <- as.data.frame(clinvar)
     #clinvar$CLNSIG <- factor(clinvar$CLNSIG)
     #clinvar
+    clinvar <- clinvar %>% dplyr::mutate(CLNSIG=as.factor(CLNSIG))
     clinvar
 }
 

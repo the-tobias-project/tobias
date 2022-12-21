@@ -8,6 +8,8 @@ library(testthat)
 library(tobias)
 
 test_check("tobias")
-FALSE
-FALSE
-2
+
+test_that("connection to db works", {
+    clinvar <- dplyr::tbl(con, dbplyr::in_schema("tobias", "original_table"))
+    expect_gt(nrow(clinvar), 3)
+})

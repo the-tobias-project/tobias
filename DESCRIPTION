@@ -9,21 +9,19 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Imports: 
     caret,
-    dplyr,
+    DBI,
     dbplyr,
+    dplyr,
     effects,
     ggplot2,
     grid,
     gridExtra,
     gtable,
+    magrittr,
     nnet,
-    scales,
-    shiny,
-    sparklyr,
     odbc,
-    DBI,
-    shinydashboard,
-    devtools
+    scales,
+    shiny
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

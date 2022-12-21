@@ -32,8 +32,9 @@ pops <- data.frame(rbind(
 colnames(pops) <- c("symbol", "label", "color")
 
 
-# Load Data
+# Load Data. This is temporal. Change of code logic using dplyr in progress.
 clinvar <- read_data(con, "tobias", "original_table") %>% collect()
+clinvar <- as.data.frame(clinvar)
 clinvar$CLNSIG <- as.factor(clinvar$CLNSIG)
 
 clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")

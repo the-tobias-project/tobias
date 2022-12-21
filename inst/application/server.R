@@ -8,6 +8,7 @@
 library(shinydashboard)
 library(tobias)
 
+con  <- connect_cluster()
 #---------------------------
 #Load once when app is launched
 #---------------------------
@@ -32,7 +33,7 @@ colnames(pops) <- c("symbol", "label", "color")
 
 
 # Load Data
-clinvar <- read_data("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab")
+clinvar <- read_data(con, "tobias", "original_table") %>% collect()
 clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
 populations <- as.vector(pops$symbol)
 dataset <- set_AFs(clinvar, c("adj", populations))

@@ -34,6 +34,8 @@ colnames(pops) <- c("symbol", "label", "color")
 
 # Load Data
 clinvar <- read_data(con, "tobias", "original_table") %>% collect()
+clinvar$CLNSIG <- as.factor(clinvar$CLNSIG)
+
 clinvar$ACMG <- relevel(clinvar$CLNSIG, ref = "VUS")
 populations <- as.vector(pops$symbol)
 dataset <- set_AFs(clinvar, c("adj", populations))
@@ -61,7 +63,6 @@ getColor <- function(id_label){
 #---------------------------
 
 shinyServer(function(input, output) {
-
 
   # 1A. Histogram Population Allele Frequency
   #---------------------------
@@ -218,8 +219,6 @@ shinyServer(function(input, output) {
       )
     }
   )
-
-
 
 })
 

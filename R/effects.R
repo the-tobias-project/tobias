@@ -3,8 +3,8 @@
 #'
 #'@description
 #' contains logic to FIT the regression models
-#' @param clinvar
-#' @param mypops
+#' @param clinvar clinvar dataset
+#' @param mypops populations
 #' @importFrom nnet multinom
 #' @export
 
@@ -41,10 +41,10 @@ plot_global_effects <- function(test_global_f) {
 #'
 #'@description
 #' Contains logic to PLOT the regression models. Plot for Global + Population Effects
-#' @param mypops
-#' @param popLabel
-#' @param popColor
-#' @param model
+#' @param mypops populations
+#' @param popLabel populations labels
+#' @param popColor populations colors
+#' @param model model used for effects estimation
 #' @importFrom effects Effect
 #' @export
 
@@ -75,10 +75,10 @@ plot_pop_effects <- function(mypops, popLabel, popColor, model) {
 #'
 #'@description
 #' Contains logic to PLOT the regression models. Plot for Global + Ancestry Effects
-#' @param mypops
-#' @param popLabel
-#' @param popColor
-#' @param model
+#' @param mypops populations
+#' @param popLabel population labels
+#' @param popColor populations colors
+#' @param model model used for effects estimation
 #' @importFrom effects Effect
 #' @export
 
@@ -98,7 +98,7 @@ plot_ancestry_effects <- function(mypops, popLabel, popColor, model) {
 #'
 #'@description
 #' Contains logic to TEST the regression models (permutation tests, statistical significance, prediction power, etc.)
-#' @param model
+#' @param model model used for Z scoring
 #' @export
 
 get_z_score <- function(model) {
@@ -110,7 +110,7 @@ get_z_score <- function(model) {
 #'
 #'@description
 #' P-value (from z-score)
-#' @param zscore
+#' @param zscore get P value for z-score
 #' @export
 
 get_p_value <- function(zscore) {
@@ -122,8 +122,8 @@ get_p_value <- function(zscore) {
 #'
 #'@description
 #' Hard missclassification error
-#' @param model
-#' @param clinvar
+#' @param model model
+#' @param clinvar clinvar data
 #' @export
 
 get_hard_error <- function(model, clinvar) {
@@ -137,8 +137,8 @@ get_hard_error <- function(model, clinvar) {
 #'
 #'@description
 #' Soft missclassification error
-#' @param model
-#' @param clinvar
+#' @param model model
+#' @param clinvar clinvar data
 #' @export
 
 get_soft_error <- function(model, clinvar) {
@@ -161,9 +161,9 @@ get_soft_error <- function(model, clinvar) {
 #'
 #'@description
 #' Cross validation
-#' @param percentage
-#' @param pops
-#' @param clinvar
+#' @param percentage train set proportion
+#' @param pops populations
+#' @param clinvar clinvar dataset
 #' @importFrom caret createDataPartition
 #' @export
 
@@ -201,25 +201,25 @@ calculate_cross_validation <- function(percentage, pops, clinvar) {
 #'
 #'@description
 #' Permutation testing for significance of predictor
-#' @param baseline.pops
-#' @param model.pops
-#' @param numberOfPermutations
+#' @param baseline_pops baseline population
+#' @param model_pops model population
+#' @param number_of_permutations number of permitations
 #' @param clinvar
 #' @export
 
-calculate_permutation_testing <- function(baseline.pops, model.pops, numberOfPermutations,
+calculate_permutation_testing <- function(baseline_pops, model_pops, number_of_permutations,
     clinvar) {
 
-    randomModelMoreSignificant <- 0
+    random_model_more_significant <- 0
 
     # 0. Calculate the model proportions Train the baseline
-    baseline <- fit_global_pop(clinvar, baseline.pops)
+    baseline <- fit_global_pop(clinvar, baseline_pops)
     softError <- get_soft_error(baseline, clinvar)
-    softError_apriori <- softError[1]
-    softError_model <- softError[2]
+    soft_error_apriori <- soft_error[1]
+    soft_error_model <- soft_error[2]
 
 
-    for (run in seq_len(numberOfPermutations)) {
+    for (run in seq_len(number_of_permutations)) {
         clinvar_new <- clinvar
 
         # 1. Shuffle the ACMG labels
@@ -228,18 +228,18 @@ calculate_permutation_testing <- function(baseline.pops, model.pops, numberOfPer
         real_class <- model.matrix(~0 + ACMG, clinvar_new)
 
         # 2. Train a new multinomial model based on a shuffled dataset
-        model <- fit_global_pop(clinvar_new, model.pops)
-        softErrorIter <- get_soft_error(model, clinvar)
-        softErrorIter_apriori <- softErrorIter[1]
-        softErrorIter_model <- softErrorIter[2]
+        model <- fit_global_pop(clinvar_new, model_pops)
+        soft_error_iter <- get_soft_error(model, clinvar)
+        soft_error_iter_apriori <- soft_error_iter[1]
+        soft_error_iter_model <- soft_error_iter[2]
 
         # 3. Count if it is more extreme than the original data
-        if (softError_apriori - softError_model < softErrorIter_apriori - softErrorIter_model) {
-            randomModelMoreSignificant = randomModelMoreSignificant + 1
+        if (soft_error_apriori - soft_error_model < soft_error_iter_apriori - soft_error_iter_model) {
+            random_model_more_significant = random_model_more_significant + 1
         }
     }
 
-    randomModelMoreSignificant/numberOfPermutations
+    random_model_more_significant/number_of_permutations
 
 
 }

@@ -1,8 +1,5 @@
 
 #' Start cluster
-#' @param libname
-#' @param pkgname
-#' @param spark_home
 #' @export
 
 connect_cluster <- function() {
@@ -11,10 +8,9 @@ connect_cluster <- function() {
 }
 
 #' Stop cluster
-#' @param libpath
+#' @param con connection
 #' @export
 
 disconnect_cluster <- function(con) {
   DBI::dbDisconnect(con)
-  packageStartupMessage("Databricks disconnected!")
 }

@@ -6,6 +6,9 @@
 \usage{
 disconnect_cluster(con)
 }
+\arguments{
+\item{con}{connection}
+}
 \description{
 Stop cluster
 }

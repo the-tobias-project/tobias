@@ -6,6 +6,15 @@
 \usage{
 plot_pop_effects(mypops, popLabel, popColor, model)
 }
+\arguments{
+\item{mypops}{populations}
+
+\item{popLabel}{populations labels}
+
+\item{popColor}{populations colors}
+
+\item{model}{model used for effects estimation}
+}
 \description{
 Contains logic to PLOT the regression models. Plot for Global + Population Effects
 }

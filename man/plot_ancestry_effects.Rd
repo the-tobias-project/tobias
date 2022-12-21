@@ -6,6 +6,15 @@
 \usage{
 plot_ancestry_effects(mypops, popLabel, popColor, model)
 }
+\arguments{
+\item{mypops}{populations}
+
+\item{popLabel}{population labels}
+
+\item{popColor}{populations colors}
+
+\item{model}{model used for effects estimation}
+}
 \description{
 Contains logic to PLOT the regression models. Plot for Global + Ancestry Effects
 }

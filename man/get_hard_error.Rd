@@ -6,6 +6,11 @@
 \usage{
 get_hard_error(model, clinvar)
 }
+\arguments{
+\item{model}{model}
+
+\item{clinvar}{clinvar data}
+}
 \description{
 Hard missclassification error
 }

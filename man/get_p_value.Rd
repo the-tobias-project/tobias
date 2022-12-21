@@ -6,6 +6,9 @@
 \usage{
 get_p_value(zscore)
 }
+\arguments{
+\item{zscore}{get P value for z-score}
+}
 \description{
 P-value (from z-score)
 }

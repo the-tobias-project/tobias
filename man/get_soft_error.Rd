@@ -6,6 +6,11 @@
 \usage{
 get_soft_error(model, clinvar)
 }
+\arguments{
+\item{model}{model}
+
+\item{clinvar}{clinvar data}
+}
 \description{
 Soft missclassification error
 }

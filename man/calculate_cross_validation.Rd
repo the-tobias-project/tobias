@@ -6,6 +6,13 @@
 \usage{
 calculate_cross_validation(percentage, pops, clinvar)
 }
+\arguments{
+\item{percentage}{train set proportion}
+
+\item{pops}{populations}
+
+\item{clinvar}{clinvar dataset}
+}
 \description{
 Cross validation
 }

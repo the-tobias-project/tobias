@@ -6,6 +6,11 @@
 \usage{
 fit_global_pop(clinvar, mypops)
 }
+\arguments{
+\item{clinvar}{clinvar dataset}
+
+\item{mypops}{populations}
+}
 \description{
 contains logic to FIT the regression models
 }

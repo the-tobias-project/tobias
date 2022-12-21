@@ -5,11 +5,18 @@
 \title{calculate_permutation_testing}
 \usage{
 calculate_permutation_testing(
-  baseline.pops,
-  model.pops,
-  numberOfPermutations,
+  baseline_pops,
+  model_pops,
+  number_of_permutations,
   clinvar
 )
+}
+\arguments{
+\item{baseline_pops}{baseline population}
+
+\item{model_pops}{model population}
+
+\item{number_of_permutations}{number of permitations}
 }
 \description{
 Permutation testing for significance of predictor

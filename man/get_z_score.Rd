@@ -6,6 +6,9 @@
 \usage{
 get_z_score(model)
 }
+\arguments{
+\item{model}{model used for Z scoring}
+}
 \description{
 Contains logic to TEST the regression models (permutation tests, statistical significance, prediction power, etc.)
 }

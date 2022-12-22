@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        r-version: ['4.1.1', '4.2.2']
+        r-version: ['4.2.2']
 
     steps:
       - uses: actions/checkout@v3
@@ -24,12 +24,10 @@ jobs:
           r-version: ${{ matrix.r-version }}
       - name: Install dependencies
         run:  make init
-      - name: Install dependencies
-        run:  make init REPO=tobias
       - name: Install
-        run:  make install REPO=tobias
+        run:  make install
       - name: Check
-        run:  make check REPO=tobias
+        run:  make check
       - name: Deploy 
         run: |
           curl -X POST https://api.github.com/repos/the-tobias-project/tobias-R-infra/dispatches \

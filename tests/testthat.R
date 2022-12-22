@@ -6,10 +6,13 @@
 
 library(testthat)
 library(tobias)
+library(dplyr)
 
 test_check("tobias")
 
+con  <- connect_cluster()
+
 test_that("connection to db works", {
     clinvar <- dplyr::tbl(con, dbplyr::in_schema("tobias", "original_table"))
-    expect_gt(nrow(clinvar), 3)
+    expect_gt((clinvar %>% count() %>% collect())[1,1, drop=TRUE], 3)
 })

@@ -1,8 +1,7 @@
 
 init:
 	R -s -e " \
-	    #renv::restore(); \
-		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
+		install.packages(c('devtools', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
 document: 
 	R --vanilla -s -e "attachment::att_amend_desc()" && \

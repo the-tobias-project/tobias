@@ -1,7 +1,6 @@
 
 init:
-	R -s -e " \
-		install.packages(c('devtools', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
+	R -s -e "install.packages(c('devtools', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
 document: 
 	R --vanilla -s -e "attachment::att_amend_desc()" && \

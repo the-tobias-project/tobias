@@ -37,12 +37,12 @@ clean:
 	rm -rf ${REPO}*.tar.gz
 	
 
-install_package: init
+install: 
 	cd ${REPO} && \
 	R --vanilla -s -e "devtools::build()" && \
 	cd .. & R --vanilla -s -e "devtools::install('${REPO}', dependencies = TRUE)"
 
 
-install: activate init configure install_package clean
+install_full: activate init configure install_package clean
 
 .PHONY : activate install init document

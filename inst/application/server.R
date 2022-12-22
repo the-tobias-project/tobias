@@ -34,8 +34,8 @@ colnames(pops) <- c("symbol", "label", "color")
 
 
 # Load Data. This is temporal. Change of code logic using dplyr in progress.
-#clinvar <- read_data(con, "tobias", "original_table") %>% collect()
-clinvar <- read.table("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab", header = TRUE)
+clinvar <- read_data(con, "tobias", "original_table") %>% collect()
+#clinvar <- read.table("inputs/clinvar.exac.variants.gene.submission.diseases.alleles.tab", header = TRUE)
 clinvar <- as.data.frame(clinvar)
 clinvar$CLNSIG <- as.factor(clinvar$CLNSIG)
 

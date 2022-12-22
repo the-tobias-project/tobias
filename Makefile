@@ -1,6 +1,6 @@
 
 init:
-	R --vanilla -s -e " \
+	R -s -e " \
 	    #renv::restore(); \
 		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
@@ -24,7 +24,7 @@ prepare: activate init document format check static
 
 
 install: 
-	cd .. & R --vanilla -s -e "devtools::install('.', dependencies = TRUE)"
+	R -s -e "devtools::install('.', dependencies = TRUE)"
 
 
 .PHONY : activate install init document

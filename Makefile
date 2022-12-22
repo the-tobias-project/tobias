@@ -4,9 +4,8 @@ activate:
 
 init:
 	R --vanilla -s -e " \
-		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat', 'devtools'), repos = 'https://cloud.r-project.org/'); \
-		renv::restore()"
-
+	    renv::restore(); \
+		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
 document: 
 	R --vanilla -s -e "attachment::att_amend_desc()" && \

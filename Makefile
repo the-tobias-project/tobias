@@ -4,7 +4,7 @@ activate:
 
 init:
 	R --vanilla -s -e " \
-		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/'); \
+		install.packages(c('devtools', 'renv', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat', 'devtools'), repos = 'https://cloud.r-project.org/'); \
 		renv::restore()"
 
 

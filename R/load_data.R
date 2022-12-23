@@ -10,12 +10,13 @@
 
 library(magrittr)
 
-read_data <- function(con, db, tab) {
+read_data <- function(con, db, tab, clinvar_version) {
 
     print("Connecting to database...")
     print("Reading data...")
     #con  <- connect_cluster()
     clinvar <- dplyr::tbl(con, dbplyr::in_schema(db, tab))
+    clinvar <- clinvar %>% dplyr::filter(clinvar_version == clinvar_version)
     todrop <- c("timestamp",
                 "gnomad_version",
                 "clinvar_version")[c("timestamp",

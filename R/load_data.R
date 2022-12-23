@@ -16,7 +16,11 @@ read_data <- function(con, db, tab) {
     print("Reading data...")
     #con  <- connect_cluster()
     clinvar <- dplyr::tbl(con, dbplyr::in_schema(db, tab))
-    todrop <- c("hash", "latest")[c("hash", "latest") %in% colnames(clinvar)]
+    todrop <- c("timestamp",
+                "gnomad_version",
+                "clinvar_version")[c("timestamp",
+                                     "gnomad_version",
+                                     "clinvar_version") %in% colnames(clinvar)]
     if(length(todrop) > 0) {
       clinvar <- dplyr::select(clinvar, -todrop)
     }

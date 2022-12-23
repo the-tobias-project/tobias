@@ -24,8 +24,8 @@ jobs:
           r-version: ${{ matrix.r-version }}
       - name: Install dependencies
         run:  |
-          sudo apt update
-          sudo apt-get update && apt-get install -y --no-install-recommends \
+          sudo apt-get update && \
+            sudo apt-get install -y --no-install-recommends \
             build-essential curl libbz2-dev liblzma-dev libcurl4-openssl-dev \
             libxml2-dev libssl-dev libcurl4-openssl-dev
           make init

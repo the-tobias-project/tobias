@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      message:
+        description: 'Tobias CD'
+
 
 env:
   OWNER: ${{ github.repository_owner }}
@@ -41,9 +45,9 @@ jobs:
         run:  make check ERROR_ON="error"
       - name: Deploy 
         run: |
-          curl -X POST https://api.github.com/repos/the-tobias-project/tobias-R-infra/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.GITHUB_TOKEN }} \
-          --data '{"event_type": "Trigger Workflow", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "name":"tobias", "owner": "'"$OWNER"'" }}'
+          curl -X POST \
+          https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_FILE_NAME}/dispatches \
+          -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -d '{"ref":"${{ github.ref }}", "name":"${{ github.workflow }}", "rowner":"${{ github.repository_owner }}"}'
 
-    

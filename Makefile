@@ -6,19 +6,19 @@ init:
 	R -s -e "install.packages(c('devtools', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
 document: 
-	R --vanilla -s -e "attachment::att_amend_desc()" && \
-	R --vanilla -s -e "devtools::document()"
+	R -s -e "attachment::att_amend_desc()" && \
+	R -s -e "devtools::document()"
 
 check:
-	R --vanilla -s -e "devtools::check()" && \
-	R --vanilla -s -e "devtools::test()"
+	R -s -e "devtools::check()" && \
+	R -s -e "devtools::test()"
 
 
 static: 
-	R --vanilla -s -e 'lintr::lint_package()'
+	R -s -e 'lintr::lint_package()'
 
 format:
-	R --vanilla -e "formatR::tidy_dir('R', recursive = TRUE, keep.comment = TRUE, keep.blank.line = FALSE, reindent.spaces = 2)"
+	R -s -e "formatR::tidy_dir('R', recursive = TRUE, keep.comment = TRUE, keep.blank.line = FALSE, reindent.spaces = 2)"
 
 
 prepare: activate init document format check static 

@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  GITHUB_REPOSITORY: the-tobias-project/tobias-R-infra
+  GITHUB_REPOSITORY: the-tobias-project/tobias-local-infra
   WORKFLOW_FILE_NAME: main.yml
   IMAGE: tobias
   VERSION: latest

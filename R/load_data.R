@@ -1,14 +1,13 @@
 
+library(magrittr)
+
+
 #' read_data
 #'
 #'@description
-#'
+#' read data
 #' @param path
 #' @export
-
-# TODO: ADD VERSIONING HERE DEPENDING ON USER INPUT
-
-library(magrittr)
 
 read_data <- function(con, db, tab, clinvar_version) {
 

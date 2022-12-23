@@ -5,7 +5,7 @@ document:
 
 
 check:
-	R -s -e "devtools::check(error_on=eval($(ERROR_ON)))" 
+	R -s -e "devtools::check(error_on=eval('$(ERROR_ON)'))" 
 
 
 static: 

@@ -14,7 +14,7 @@ on:
 
 env:
   GITHUB_REPOSITORY: the-tobias-project/tobias-R-infra
-  WORKFLOW_FILE_NAME: main
+  WORKFLOW_FILE_NAME: main.yml
   IMAGE: tobias
   VERSION: latest
 
@@ -53,5 +53,5 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -H "Accept: application/vnd.github+json" \
-          -d '{"ref":"${{ github.ref }}", "owner":"${{ github.repository_owner }}", "image":"${IMAGE}", "version":"${VERSION}"}'
+          -d '{"event_type": "Tobias workflow", "client_payload": { "owner":"${{ github.repository_owner }}", "image":"$IMAGE", "version":"$VERSION"}}'
 

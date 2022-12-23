@@ -48,7 +48,7 @@ jobs:
         run: |
           curl -X POST \
           https://api.github.com/repos/${{ env.GITHUB_REPOSITORY }}/actions/workflows/${{ env.WORKFLOW_FILE_NAME }}/dispatches \
-          -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -H "Accept: application/vnd.github+json" \
           -d '{"ref": "dev", "inputs": { "owner":"${{ github.repository_owner }}", "image":"${{ env.IMAGE }}", "version":"${{ env.VERSION }}"}}'

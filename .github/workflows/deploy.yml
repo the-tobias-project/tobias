@@ -14,7 +14,9 @@ on:
 
 env:
   GITHUB_REPOSITORY: the-tobias-project/tobias-R-infra
-  WORKFLOW_FILE_NAME: main.yml
+  WORKFLOW_FILE_NAME: main
+  IMAGE: tobias
+  VERSION: latest
 
 jobs:
   build:
@@ -50,5 +52,5 @@ jobs:
           https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_FILE_NAME}/dispatches \
           -H "Authorization: Bearer ${GITHUB_TOKEN}" \
           -H "Content-Type: application/json" \
-          -d '{"ref":"${{ github.ref }}", "name":"${{ github.workflow }}", "owner":"${{ github.repository_owner }}"}'
+          -d '{"ref":"${{ github.ref }}", "owner":"${{ github.repository_owner }}", "image":"${IMAGE}", "version":"${VERSION}"}'
 

@@ -39,8 +39,6 @@ jobs:
         run:  make install
       - name: Check
         run:  make check ERROR_ON="error"
-      #- name: Test
-      #  run:  make test
       - name: Deploy 
         run: |
           curl -X POST https://api.github.com/repos/the-tobias-project/tobias-R-infra/dispatches \

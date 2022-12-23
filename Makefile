@@ -1,4 +1,3 @@
-
 init:
 	rm -rf renv && \
 	rm renv.lock && \
@@ -10,9 +9,10 @@ document:
 	R -s -e "devtools::document()"
 
 check:
-	R -s -e "devtools::check()" && \
-	R -s -e "devtools::test()"
+	R -s -e "devtools::check()" 
 
+test:
+	R -s -e "devtools::test()
 
 static: 
 	R -s -e 'lintr::lint_package()'

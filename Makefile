@@ -9,7 +9,7 @@ document:
 	R -s -e "devtools::document()"
 
 check:
-	R -s -e "devtools::check()" 
+	R -s -e "devtools::check(error_on=eval($(ERROR_ON)))" 
 
 test:
 	R -s -e "devtools::test()

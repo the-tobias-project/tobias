@@ -2,6 +2,7 @@
 init:
 	rm -rf renv && \
 	rm renv.lock && \
+	rm .Rprofile && \
 	R -s -e "install.packages(c('devtools', 'roxygen2', 'lintr', 'formatR', 'attachment', 'typed', 'testthat'), repos = 'https://cloud.r-project.org/')"
 
 document: 

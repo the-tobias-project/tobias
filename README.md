@@ -14,47 +14,9 @@ Tobias was conceived and developed thanks to support from
 2. The Stanford/Baylor Clinical Genome Resource grant, awarded by the NHGRI (U01 HG007436-04)
 
 
-#### Installation
-Install "direnv" first. Then run the following commands:
-
-```console
-apt-get install direnv
-
-pip install pyenv virtualenv-pyenv databricks-connect
-pyenv install 3.10.6
-pyenv virtualenv 3.10.6 tobias
-pyenv local tobias
-
-pip uninstall pyspark
-
-make install
-```
-
-Check that the java version is java-8! Otherwise databricks-connect does not work
-
-
-Go to databricks > compute and select your cluster, you can see an url like this one:
-
-https://DATABRICKS_HOST/login.html?o=ORGANIZATION#setting/clusters/CLUSTER_ID/configuration
-
-Extract the following fields
-
-```console
-{
-databricks host: DATABRICKS_HOST
-
-Databricks Token: GENERATE A PERSONAL ACCESS TOKER HERE IN DATABRICKS SETTINGS
-
-Cluster ID: CLUSTER_ID
-
-Org ID: ORGANIZATION
-
-PORT: 15001
-}
-```
-
-Then copy .envrc_template to .envrc and set the corresponding values in .envrc
-
+#### Installation and use
+The package is linked to the repository tobias-rinfra
+Follow the instructions here: https://github.com/the-tobias-project/tobias-R-infra
 
 
 

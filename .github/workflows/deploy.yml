@@ -50,7 +50,7 @@ jobs:
         run: |
           curl -X POST \
           https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_FILE_NAME}/dispatches \
-          -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          -H "Authorization: Bearer ${secrets.GITHUB_TOKEN}" \
           -H "Content-Type: application/json" \
           -d '{"ref":"${{ github.ref }}", "owner":"${{ github.repository_owner }}", "image":"${IMAGE}", "version":"${VERSION}"}'
 

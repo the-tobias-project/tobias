@@ -23,7 +23,10 @@ Imports:
     scales,
     shiny,
     tidyverse,
-    devtools
+    devtools,
+    rJava,
+    RJDBC,
+    sparklyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

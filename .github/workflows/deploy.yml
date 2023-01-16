@@ -7,9 +7,9 @@ on:
     branches: [ "main" ]
 
 env:
-  GITHUB_REPOSITORY: ${{ github.repository_owner }}/${{github.repository}}
+  GITHUB_REPOSITORY: the-tobias-project/tobias-local-infra
   WORKFLOW_FILE_NAME: main.yml
-  IMAGE: ${{github.repository}}
+  IMAGE: tobias
   VERSION: latest
 
 jobs:
@@ -51,7 +51,6 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -H "Accept: application/vnd.github+json" \
-          -d '{"ref": "dev", "inputs": { "owner":"${{ github.repository_owner }}", \
-          "image":"${{ env.IMAGE }}", "version":"${{ env.VERSION }}" }}'
+          -d '{"ref": "dev", "inputs": { "owner":"${{ github.repository_owner }}", "image":"${{ env.IMAGE }}", "version":"${{ env.VERSION }}"}}'
       
 
